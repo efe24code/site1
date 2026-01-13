@@ -3,114 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free API Hub | Underrated Collection</title>
+    <title>DevTool Hub | Online Swiss Army Knife</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        .log-entry { font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; }
-        .success { color: #10b981; }
-        .error { color: #ef4444; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        .log-entry { font-size: 0.75rem; border-left: 2px solid #3b82f6; padding-left: 8px; margin-bottom: 4px; }
+        .success { color: #10b981; border-color: #10b981; }
+        .error { color: #ef4444; border-color: #ef4444; }
+        .warning { color: #f59e0b; border-color: #f59e0b; }
+        textarea { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; resize: none; }
+        textarea:focus { border-color: #3b82f6; outline: none; ring: 1px solid #3b82f6; }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen p-8">
+<body class="p-4 md:p-8">
 
-    <header class="max-w-5xl mx-auto mb-12 text-center">
-        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-            Ücretsiz API Koleksiyonu
+    <header class="max-w-6xl mx-auto text-center mb-10">
+        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            DevTool Hub
         </h1>
-        <p class="mt-4 text-gray-400 italic text-sm">Projen için ihtiyacın olan her şey burada. Bookmark atmayı unutma!</p>
+        <p class="text-slate-400 mt-2">Hızlı, güvenli ve tarayıcı tabanlı geliştirici araçları.</p>
     </header>
 
-    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-all">
-                <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-semibold">Random Quote API</h3>
-                    <span class="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">No Auth</span>
+        <div class="lg:col-span-3 space-y-8">
+            
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="text-blue-400">#</span> JSON Formatter & Validator
+                </h2>
+                <textarea id="jsonInput" rows="6" class="w-full p-4 rounded-lg code-font text-sm mb-4" placeholder="JSON verisini buraya yapıştırın..."></textarea>
+                <div class="flex gap-2">
+                    <button onclick="formatJSON()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition">Formatla</button>
+                    <button onclick="validateJSON()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg font-medium transition">Validate</button>
                 </div>
-                <p class="text-gray-400 text-sm mt-2">Rastgele ünlü sözler getirir. Rate limit: 100 req/min.</p>
-                
-                <div class="mt-4 bg-gray-950 p-3 rounded text-xs text-blue-300 overflow-x-auto">
-                    <code>fetch('https://api.quotable.io/random')</code>
-                </div>
-                
-                <button onclick="testAPI('quote', 'https://api.quotable.io/random')" 
-                        class="mt-4 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-medium transition">
-                    Şimdi Dene
-                </button>
-            </div>
+            </section>
 
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all">
-                <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-semibold">Random User API</h3>
-                    <span class="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">No Auth</span>
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="text-emerald-400">#</span> Base64 Encode / Decode
+                </h2>
+                <textarea id="base64Input" rows="4" class="w-full p-4 rounded-lg code-font text-sm mb-4" placeholder="Metin veya Base64 girin..."></textarea>
+                <div class="flex gap-2">
+                    <button onclick="base64Action('encode')" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition">Encode</button>
+                    <button onclick="base64Action('decode')" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-medium transition">Decode</button>
                 </div>
-                <p class="text-gray-400 text-sm mt-2">Mock veriler için sahte kullanıcı profilleri oluşturur.</p>
-                
-                <div class="mt-4 bg-gray-950 p-3 rounded text-xs text-blue-300 overflow-x-auto">
-                    <code>fetch('https://randomuser.me/api/')</code>
+            </section>
+
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="text-purple-400">#</span> Hash & Password Generator
+                </h2>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <input id="hashInput" type="text" class="flex-1 bg-slate-900 border border-slate-700 p-2 rounded-lg text-sm" placeholder="Hashlenecek metin...">
+                    <button onclick="generateHash()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-medium transition">SHA-256 Üret</button>
                 </div>
-                
-                <button onclick="testAPI('user', 'https://randomuser.me/api/')" 
-                        class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 py-2 rounded font-medium transition">
-                    Şimdi Dene
-                </button>
-            </div>
+            </section>
+
         </div>
 
         <div class="lg:col-span-1">
-            <div class="bg-black rounded-xl p-4 sticky top-8 border border-gray-600 h-[500px] flex flex-col">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500">Live API Logs</h4>
+            <div class="bg-black/50 backdrop-blur-md p-5 rounded-2xl border border-slate-700 sticky top-8 h-[600px] flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500">İşlem Logları</h3>
                     <button onclick="clearLogs()" class="text-[10px] text-red-400 hover:underline">Temizle</button>
                 </div>
                 
-                <div id="log-container" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-2 custom-scrollbar">
-                    <p class="log-entry text-gray-500 italic">> Sistem hazır. Test bekleniyor...</p>
+                <div id="logScreen" class="flex-1 overflow-y-auto custom-scrollbar mb-4">
+                    <div class="log-entry italic text-slate-500">> Sistem başlatıldı...</div>
                 </div>
 
-                <div class="p-3 bg-yellow-900/30 border border-yellow-700 rounded text-xs text-yellow-200">
-                    <strong>Uyarı:</strong> API'lerin çoğu "CORS" politikaları nedeniyle tarayıcıdan doğrudan her zaman çalışmayabilir. Localhost'ta test ederken eklenti gerekebilir.
+                <div class="bg-yellow-900/20 border border-yellow-700/50 p-3 rounded-lg">
+                    <p class="text-[11px] text-yellow-500 leading-relaxed">
+                        <strong>Güvenlik Notu:</strong> Tüm işlemler tarayıcı tarafında (Client-side) yapılır. Verileriniz asla sunucuya gönderilmez.
+                    </p>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        async function testAPI(type, url) {
-            const logContainer = document.getElementById('log-container');
-            addLog(`İstek atılıyor: ${url}`, 'info');
-
-            try {
-                const start = performance.now();
-                const response = await fetch(url);
-                const end = performance.now();
-                const data = await response.json();
-                
-                const duration = (end - start).toFixed(0);
-
-                if (response.ok) {
-                    addLog(`[OK] ${type.toUpperCase()} - ${duration}ms`, 'success');
-                    console.log(data); // Detaylar tarayıcı konsolunda
-                } else {
-                    addLog(`[HATA] Status: ${response.status}`, 'error');
-                }
-            } catch (err) {
-                addLog(`[KRİTİK] Bağlantı reddedildi: ${err.message}`, 'error');
-            }
-        }
-
-        function addLog(message, style) {
-            const logContainer = document.getElementById('log-container');
-            const entry = document.createElement('p');
-            entry.className = `log-entry ${style === 'success' ? 'success' : style === 'error' ? 'error' : 'text-blue-400'}`;
-            entry.innerText = `> ${new Date().toLocaleTimeString()}: ${message}`;
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+        // Log Mekanizması
+        function addLog(msg, type = 'info') {
+            const screen = document.getElementById('logScreen');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
+            screen.prepend(entry);
         }
 
         function clearLogs() {
-            document.getElementById('log-container').innerHTML = '';
+            document.getElementById('logScreen').innerHTML = '';
+            addLog('Loglar temizlendi.', 'warning');
+        }
+
+        // JSON İşlemleri
+        function formatJSON() {
+            const input = document.getElementById('jsonInput');
+            try {
+                const obj = JSON.parse(input.value);
+                input.value = JSON.stringify(obj, null, 4);
+                addLog('JSON başarıyla formatlandı.', 'success');
+            } catch (e) {
+                addLog('JSON Hatası: ' + e.message, 'error');
+            }
+        }
+
+        function validateJSON() {
+            const input = document.getElementById('jsonInput').value;
+            try {
+                JSON.parse(input);
+                addLog('JSON Geçerli (Valid).', 'success');
+            } catch (e) {
+                addLog('Geçersiz JSON!', 'error');
+            }
+        }
+
+        // Base64 İşlemleri
+        function base64Action(mode) {
+            const input = document.getElementById('base64Input');
+            try {
+                if(mode === 'encode') {
+                    input.value = btoa(input.value);
+                    addLog('Metin Base64 formatına çevrildi.', 'success');
+                } else {
+                    input.value = atob(input.value);
+                    addLog('Base64 metne çevrildi.', 'success');
+                }
+            } catch (e) {
+                addLog('Base64 Hatası: Geçersiz karakterler.', 'error');
+            }
+        }
+
+        // Hash Üretimi (SHA-256)
+        async function generateHash() {
+            const text = document.getElementById('hashInput').value;
+            if(!text) return addLog('Lütfen metin girin.', 'warning');
+            
+            const msgBuffer = new TextEncoder().encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            document.getElementById('hashInput').value = hashHex;
+            addLog('SHA-256 Hash üretildi.', 'success');
         }
     </script>
 </body>
