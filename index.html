@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free API Hub | Underrated Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .log-entry { font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-8">
+
+    <header class="max-w-5xl mx-auto mb-12 text-center">
+        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+            Ücretsiz API Koleksiyonu
+        </h1>
+        <p class="mt-4 text-gray-400 italic text-sm">Projen için ihtiyacın olan her şey burada. Bookmark atmayı unutma!</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-all">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xl font-semibold">Random Quote API</h3>
+                    <span class="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">No Auth</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-2">Rastgele ünlü sözler getirir. Rate limit: 100 req/min.</p>
+                
+                <div class="mt-4 bg-gray-950 p-3 rounded text-xs text-blue-300 overflow-x-auto">
+                    <code>fetch('https://api.quotable.io/random')</code>
+                </div>
+                
+                <button onclick="testAPI('quote', 'https://api.quotable.io/random')" 
+                        class="mt-4 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-medium transition">
+                    Şimdi Dene
+                </button>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xl font-semibold">Random User API</h3>
+                    <span class="bg-green-900 text-green-300 text-xs px-2 py-1 rounded">No Auth</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-2">Mock veriler için sahte kullanıcı profilleri oluşturur.</p>
+                
+                <div class="mt-4 bg-gray-950 p-3 rounded text-xs text-blue-300 overflow-x-auto">
+                    <code>fetch('https://randomuser.me/api/')</code>
+                </div>
+                
+                <button onclick="testAPI('user', 'https://randomuser.me/api/')" 
+                        class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 py-2 rounded font-medium transition">
+                    Şimdi Dene
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="bg-black rounded-xl p-4 sticky top-8 border border-gray-600 h-[500px] flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500">Live API Logs</h4>
+                    <button onclick="clearLogs()" class="text-[10px] text-red-400 hover:underline">Temizle</button>
+                </div>
+                
+                <div id="log-container" class="flex-1 overflow-y-auto space-y-2 mb-4 pr-2 custom-scrollbar">
+                    <p class="log-entry text-gray-500 italic">> Sistem hazır. Test bekleniyor...</p>
+                </div>
+
+                <div class="p-3 bg-yellow-900/30 border border-yellow-700 rounded text-xs text-yellow-200">
+                    <strong>Uyarı:</strong> API'lerin çoğu "CORS" politikaları nedeniyle tarayıcıdan doğrudan her zaman çalışmayabilir. Localhost'ta test ederken eklenti gerekebilir.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function testAPI(type, url) {
+            const logContainer = document.getElementById('log-container');
+            addLog(`İstek atılıyor: ${url}`, 'info');
+
+            try {
+                const start = performance.now();
+                const response = await fetch(url);
+                const end = performance.now();
+                const data = await response.json();
+                
+                const duration = (end - start).toFixed(0);
+
+                if (response.ok) {
+                    addLog(`[OK] ${type.toUpperCase()} - ${duration}ms`, 'success');
+                    console.log(data); // Detaylar tarayıcı konsolunda
+                } else {
+                    addLog(`[HATA] Status: ${response.status}`, 'error');
+                }
+            } catch (err) {
+                addLog(`[KRİTİK] Bağlantı reddedildi: ${err.message}`, 'error');
+            }
+        }
+
+        function addLog(message, style) {
+            const logContainer = document.getElementById('log-container');
+            const entry = document.createElement('p');
+            entry.className = `log-entry ${style === 'success' ? 'success' : style === 'error' ? 'error' : 'text-blue-400'}`;
+            entry.innerText = `> ${new Date().toLocaleTimeString()}: ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
