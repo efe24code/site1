@@ -1,6 +1,7 @@
 {
   "version": 2,
   "public": true,
+  "name": "devtool-hub",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
