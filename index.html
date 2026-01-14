@@ -3,99 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiberTeam | Dev & OSINT Hub</title>
+    <title>DevTool-Lite | Gelişmiş Geliştirici Araçları</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #05070a; color: #a3b3bc; font-family: 'Inter', sans-serif; }
-        .cyber-card { background: rgba(13, 17, 23, 0.9); border: 1px solid #30363d; transition: 0.3s; }
-        .cyber-card:hover { border-color: #238636; box-shadow: 0 0 20px rgba(35, 134, 54, 0.2); transform: translateY(-3px); }
-        .siber-text { background: linear-gradient(90deg, #238636, #2ea043); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; transition: 0.3s; }
+        .glass-card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; transition: 0.3s; }
+        .glass-card:hover { border-color: #58a6ff; transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        #sidebar { width: 70px; position: fixed; left: 0; top: 0; height: 100vh; background: #010409; border-right: 1px solid #30363d; z-index: 100; transition: 0.3s; }
-        .main-content { margin-left: 70px; padding: 40px; }
+        #sidebar { width: 80px; position: fixed; left: 0; top: 0; height: 100vh; background: #010409; border-right: 1px solid #30363d; z-index: 100; transition: 0.3s; }
+        .main-content { margin-left: 80px; padding: 40px; min-height: 100vh; }
         
-        .code-window { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
-        .tab-btn { padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.2s; color: #8b949e; }
-        .tab-btn.active { background: #238636; color: white; }
+        .code-box { background: #010409; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
+        .tab-btn { padding: 8px 16px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; color: #8b949e; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #58a6ff; border-bottom-color: #58a6ff; background: rgba(88, 166, 255, 0.05); }
         
-        input, textarea { background: #010409 !important; border: 1px solid #30363d !important; color: #7ee787 !important; border-radius: 8px; padding: 12px; outline: none; width: 100%; font-family: 'Fira Code', monospace; }
+        input, textarea { background: #0d1117 !important; border: 1px solid #30363d !important; color: #58a6ff !important; border-radius: 10px; padding: 14px; outline: none; width: 100%; font-family: 'Fira Code', monospace; }
+        input:focus { border-color: #58a6ff !important; }
         .hidden { display: none; }
+        .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div id="sidebar" class="flex flex-col items-center py-8">
-        <div onclick="goHome()" class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center text-white font-bold cursor-pointer mb-8">S/T</div>
-        <div class="flex flex-col gap-6 text-slate-600 text-xs font-bold">
-            <span class="rotate-90 cursor-default">TOOLS</span>
+    <div id="sidebar" class="flex flex-col items-center py-10">
+        <div onclick="goHome()" class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black cursor-pointer mb-10 shadow-lg shadow-blue-500/20">DL</div>
+        <div class="flex flex-col gap-8 text-slate-500 text-[10px] font-bold tracking-widest">
+            <span class="rotate-90">MENU</span>
         </div>
     </div>
 
     <div class="main-content">
         <div id="home">
-            <div class="mb-12">
-                <h1 class="text-5xl siber-text italic tracking-tighter">SİBERTEAM</h1>
-                <p class="text-xs tracking-[0.5em] text-slate-500 mt-2 uppercase">Advanced Security & Development Platform</p>
-                <input type="text" id="search" onkeyup="filter()" placeholder="Araçları tara..." class="mt-8 max-w-md border-green-900/30 shadow-lg">
-            </div>
+            <header class="mb-12">
+                <h1 class="text-4xl font-black tracking-tight text-white">DEVTOOL<span class="text-blue-500">-LITE</span></h1>
+                <p class="text-slate-500 text-sm mt-1">Hızlı, Güvenli ve Kapsamlı Geliştirici Ekosistemi</p>
+                <div class="mt-8 max-w-xl">
+                    <input type="text" id="search" onkeyup="filter()" placeholder="Araçlarda ara (IP, Whois, JSON...)" class="shadow-xl">
+                </div>
+            </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4" id="toolGrid">
-                <div onclick="openTool('ip')" class="cyber-card p-6 rounded-2xl cursor-pointer" data-name="ip sorgu tracker">
-                    <div class="text-green-500 text-xl font-bold mb-2">IP</div>
-                    <div class="text-xs font-bold text-white uppercase">IP Tracker</div>
-                    <div class="text-[10px] text-slate-500 mt-1">Konum, ISP ve ASN Bilgisi</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="toolGrid">
+                <div onclick="openTool('ip')" class="glass-card p-6 cursor-pointer" data-name="ip tracker sorgu location">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-blue-400 text-2xl font-bold">IP</span>
+                        <span class="badge bg-blue-500/10 text-blue-500">Network</span>
+                    </div>
+                    <div class="text-sm font-bold text-white uppercase">IP Tracker</div>
+                    <p class="text-xs text-slate-500 mt-2">Detaylı konum ve ISP analizi yapar.</p>
                 </div>
-                <div onclick="openTool('whois')" class="cyber-card p-6 rounded-2xl cursor-pointer" data-name="whois site domain sorgu">
-                    <div class="text-blue-500 text-xl font-bold mb-2">WS</div>
-                    <div class="text-xs font-bold text-white uppercase">Whois Lookup</div>
-                    <div class="text-[10px] text-slate-500 mt-1">Domain kayıt ve DNS sorgu</div>
+
+                <div onclick="openTool('whois')" class="glass-card p-6 cursor-pointer" data-name="whois domain site sorgu dns">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-purple-400 text-2xl font-bold">WS</span>
+                        <span class="badge bg-purple-500/10 text-purple-500">Domain</span>
+                    </div>
+                    <div class="text-sm font-bold text-white uppercase">Whois Lookup</div>
+                    <p class="text-xs text-slate-500 mt-2">Alan adı kayıt ve RDAP bilgilerini getirir.</p>
                 </div>
-                <div onclick="openTool('json')" class="cyber-card p-6 rounded-2xl cursor-pointer" data-name="json beautifier">
-                    <div class="text-yellow-500 text-xl font-bold mb-2">{ }</div>
-                    <div class="text-xs font-bold text-white uppercase">JSON Formatter</div>
-                    <div class="text-[10px] text-slate-500 mt-1">Data yapılandırma</div>
+
+                <div onclick="openTool('json')" class="glass-card p-6 cursor-pointer" data-name="json beautifier formatter">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-orange-400 text-2xl font-bold">{ }</span>
+                        <span class="badge bg-orange-500/10 text-orange-500">Data</span>
+                    </div>
+                    <div class="text-sm font-bold text-white uppercase">JSON Formatter</div>
+                    <p class="text-xs text-slate-500 mt-2">Karmaşık verileri okunabilir hale getirir.</p>
                 </div>
-                <div onclick="openTool('hash')" class="cyber-card p-6 rounded-2xl cursor-pointer" data-name="sha256 hash md5">
-                    <div class="text-red-500 text-xl font-bold mb-2">#</div>
-                    <div class="text-xs font-bold text-white uppercase">SHA-256 Hasher</div>
-                    <div class="text-[10px] text-slate-500 mt-1">Güvenli metin şifreleme</div>
+
+                <div onclick="openTool('hash')" class="glass-card p-6 cursor-pointer" data-name="sha256 hash security crypto">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-emerald-400 text-2xl font-bold">#</span>
+                        <span class="badge bg-emerald-500/10 text-emerald-500">Crypto</span>
+                    </div>
+                    <div class="text-sm font-bold text-white uppercase">SHA-256 Hasher</div>
+                    <p class="text-xs text-slate-500 mt-2">Verileri saniyeler içinde şifreler.</p>
                 </div>
             </div>
         </div>
 
-        <div id="interface" class="hidden">
-            <div class="flex items-center gap-6 mb-10">
-                <button onclick="goHome()" class="text-slate-500 hover:text-white transition">← GERİ</button>
-                <h2 id="toolTitle" class="text-3xl font-black text-white italic">TOOL</h2>
+        <div id="interface" class="hidden animate-in fade-in duration-300">
+            <div class="flex items-center gap-4 mb-10">
+                <button onclick="goHome()" class="px-4 py-2 bg-white/5 rounded-lg hover:bg-white/10 transition text-sm">← Ana Sayfa</button>
+                <h2 id="toolTitle" class="text-3xl font-black text-white">TOOL</h2>
             </div>
 
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
-                <div class="cyber-card p-8 rounded-3xl h-fit">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-card p-8 h-fit">
                     <div id="toolUI"></div>
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <div class="flex flex-wrap justify-between items-center gap-4">
-                        <div class="flex bg-[#0d1117] p-1 rounded-lg border border-[#30363d]">
+                    <div class="flex flex-wrap justify-between items-center bg-[#010409] p-1 rounded-xl border border-[#30363d]">
+                        <div class="flex">
                             <div onclick="setLang('js')" class="tab-btn active" id="l-js">JavaScript</div>
                             <div onclick="setLang('py')" class="tab-btn" id="l-py">Python</div>
                             <div onclick="setLang('php')" class="tab-btn" id="l-php">PHP</div>
                         </div>
-                        <div class="flex bg-[#0d1117] p-1 rounded-lg border border-[#30363d]">
+                        <div class="flex">
                             <div onclick="setLvl('simple')" class="tab-btn active" id="v-simple">Basit</div>
                             <div onclick="setLvl('mid')" class="tab-btn" id="v-mid">Orta</div>
                             <div onclick="setLvl('hard')" class="tab-btn" id="v-hard">Zor</div>
                         </div>
                     </div>
 
-                    <div class="code-window">
-                        <div class="bg-[#161b22] px-4 py-2 text-[10px] border-bottom border-[#30363d] flex gap-2">
-                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <div class="code-box">
+                        <div class="bg-[#161b22] px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Örnek Kaynak Kod</span>
+                            <div class="flex gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40"></div>
+                            </div>
                         </div>
-                        <pre id="codeDisplay" class="p-6 text-[11px] font-mono text-[#7ee787] overflow-x-auto"></pre>
+                        <pre id="codeDisplay" class="p-6 text-[12px] font-mono text-[#7ee787] overflow-x-auto leading-relaxed"></pre>
                     </div>
                 </div>
             </div>
@@ -108,41 +129,55 @@
         const db = {
             ip: {
                 title: "IP TRACKER",
-                ui: `<input id="ipInp" placeholder="Hedef IP (Örn: 8.8.8.8)"><button onclick="runIP()" class="bg-green-600 w-full mt-4 py-3 rounded-lg font-bold text-white">SORGULA</button><div id="ipRes" class="mt-4"></div>`,
+                ui: `<input id="ipInp" placeholder="IP Adresi (Boş = Seninki)"><button onclick="runIP()" class="bg-blue-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">SORGULA</button><div id="ipRes" class="mt-6"></div>`,
                 js: {
-                    simple: `const res = await fetch("https://ipapi.co/8.8.8.8/json/");\nconst data = await res.json();`,
-                    mid: `async function getIP(ip) {\n  try {\n    const r = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n    if(!r.ok) throw Error();\n    return await r.json();\n  } catch(e) { return "Hata!"; }\n}`,
-                    hard: `// Pro Tracker with Map Logic\nclass IPTracker {\n  constructor(ip) { this.target = ip; }\n  async locate() {\n    const response = await fetch(\`https://ipapi.co/\${this.target}/json/\`);\n    return this.parse(await response.json());\n  }\n  parse(d) { return \`City: \${d.city}\`; }\n}`
+                    simple: `// Basit İstek\nfetch("https://ipapi.co/json/").then(r => r.json()).then(console.log);`,
+                    mid: `async function getIPInfo(ip = "") {\n  const response = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n  const data = await response.json();\n  return data;\n}`,
+                    hard: `// Pro Class Yapısı\nclass NetworkInfo {\n  async get(ip) {\n    try {\n      const res = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n      return await res.json();\n    } catch(err) { throw new Error("API Hatası"); }\n  }\n}`
                 },
                 py: {
-                    simple: `import requests\nprint(requests.get("https://ipapi.co/8.8.8.8/json/").json())`,
-                    mid: `import requests\ndef track(ip):\n    data = requests.get(f"https://ipapi.co/{ip}/json/").json()\n    return data.get("org", "Bilinmiyor")`,
-                    hard: `import requests\nclass SiberTracker:\n    def __init__(self, ip):\n        self.url = f"https://ipapi.co/{ip}/json/"\n    def get_info(self):\n        return requests.get(self.url).json()`
+                    simple: `import requests\nprint(requests.get("https://ipapi.co/json/").json())`,
+                    mid: `import requests\ndef track(ip=""): \n    return requests.get(f"https://ipapi.co/{ip}/json/").json()`,
+                    hard: `import requests\nclass IPLocate:\n    def __init__(self, target):\n        self.data = requests.get(f"https://ipapi.co/{target}/json/").json()\n    def show(self):\n        return self.data['city']`
                 },
                 php: {
-                    simple: `$data = json_decode(file_get_contents("https://ipapi.co/8.8.8.8/json/"));`,
-                    mid: `function get_ip($ip) {\n  $url = "https://ipapi.co/$ip/json/";\n  return json_decode(file_get_contents($url), true);\n}`,
-                    hard: `// Advanced PHP Curl Implementation\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, "https://ipapi.co/8.8.8.8/json/");\n$res = curl_exec($ch);`
+                    simple: `echo file_get_contents("https://ipapi.co/json/");`,
+                    mid: `$res = json_decode(file_get_contents("https://ipapi.co/8.8.8.8/json/"));`,
+                    hard: `$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, "https://ipapi.co/json/");\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);\n$result = curl_exec($ch);`
                 }
             },
             whois: {
                 title: "WHOIS LOOKUP",
-                ui: `<input id="wsInp" placeholder="domain.com"><button onclick="runWS()" class="bg-blue-600 w-full mt-4 py-3 rounded-lg font-bold text-white">DOMAIN SORGULA</button><pre id="wsRes" class="mt-4 text-[10px] text-blue-400 font-mono overflow-x-auto"></pre>`,
+                ui: `<input id="wsInp" placeholder="example.com"><button onclick="runWS()" class="bg-purple-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-purple-500 transition">WHOIS ÇEK</button><pre id="wsRes" class="mt-6 text-[11px] text-purple-400 font-mono overflow-x-auto whitespace-pre-wrap"></pre>`,
                 js: {
-                    simple: `// Browser can't direct WHOIS, use API\nfetch("https://rdap.org/domain/google.com");`,
-                    mid: `async function whois(domain) {\n  const r = await fetch(\`https://rdap.org/domain/\${domain}\`);\n  const d = await r.json();\n  return d.entities[0];\n}`,
-                    hard: `// Hard implementation for Node.js using net module\nconst net = require('net');\nconst client = net.createConnection(43, 'whois.verisign-grs.com');`
+                    simple: `fetch("https://rdap.org/domain/google.com");`,
+                    mid: `async function checkWhois(domain) {\n  const res = await fetch(\`https://rdap.org/domain/\${domain}\`);\n  return await res.json();\n}`,
+                    hard: `// RDAP Parser Integration\nconst fetchWhois = async (dom) => {\n  const data = await (await fetch("https://rdap.org/domain/"+dom)).json();\n  console.log("Registered to: " + data.entities[0].vcardArray[1][2][3]);\n};`
                 },
                 py: {
                     simple: `import whois\nprint(whois.whois("google.com"))`,
-                    mid: `import whois\ndef check(domain):\n    w = whois.whois(domain)\n    return w.expiration_date`,
-                    hard: `import socket\ndef raw_whois(domain):\n    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n    s.connect(("whois.iana.org", 43))\n    s.send((domain + "\\r\\n").encode())\n    return s.recv(4096).decode()`
+                    mid: `import whois\ndef get_expiry(dom):\n    return whois.whois(dom).expiration_date`,
+                    hard: `import socket\ndef socket_whois(d):\n    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n    s.connect(("whois.iana.org", 43))\n    s.send((d + "\\r\\n").encode())\n    return s.recv(4096).decode()`
                 },
                 php: {
-                    simple: `echo shell_exec("whois google.com");`,
-                    mid: `$res = dns_get_record("google.com", DNS_ALL);`,
-                    hard: `// Socket based whois in PHP\n$fp = fsockopen("whois.verisign-grs.com", 43);\nfputs($fp, "google.com\\r\\n");`
+                    simple: `print_r(dns_get_record("google.com"));`,
+                    mid: `$res = shell_exec("whois google.com");`,
+                    hard: `$fp = fsockopen("whois.verisign-grs.com", 43);\nfputs($fp, "google.com\\r\\n");\nwhile(!feof($fp)) echo fgets($fp, 128);`
                 }
+            },
+            json: {
+                title: "JSON FORMATTER",
+                ui: `<textarea id="jt" rows="10" placeholder='{"data": "raw"}'></textarea><button onclick="runJSON()" class="bg-orange-600 w-full mt-4 py-4 rounded-xl font-bold text-white">FORMATLA</button>`,
+                js: { simple: `JSON.stringify(obj, null, 2);`, mid: `JSON.stringify(JSON.parse(input), null, 4);`, hard: `// Deep Clean & Sort JSON Logic` },
+                py: { simple: `json.dumps(d, indent=2)`, mid: `json.dumps(json.loads(s), indent=4, sort_keys=True)`, hard: `# Custom Encoder Class` },
+                php: { simple: `json_encode($d, 128);`, mid: `json_encode(json_decode($s), JSON_PRETTY_PRINT);`, hard: `// Nested Array Handler` }
+            },
+            hash: {
+                title: "SHA-256 HASHER",
+                ui: `<input id="ht" placeholder="Metin girin..."><button onclick="runHash()" class="bg-emerald-600 w-full mt-4 py-4 rounded-xl font-bold text-white">HASH ÜRET</button>`,
+                js: { simple: `crypto.subtle.digest('SHA-256', data);`, mid: `// Async SubtleCrypto Logic`, hard: `// HMAC-SHA256 Auth implementation` },
+                py: { simple: `hashlib.sha256(b'txt').hexdigest()`, mid: `hashlib.sha256(text.encode()).hexdigest()`, hard: `// Password Salted Hash Logic` },
+                php: { simple: `hash('sha256', 'txt');`, mid: `password_hash($p, PASSWORD_BCRYPT);`, hard: `// PBKDF2 logic` }
             }
         };
 
@@ -175,22 +210,25 @@
         }
 
         function updateCode() {
-            document.getElementById('codeDisplay').innerText = db[curTool][curLang][curLvl];
+            const code = db[curTool][curLang][curLvl] || "// Örnek hazırlanıyor...";
+            document.getElementById('codeDisplay').innerText = code;
         }
 
+        // EXEC FUNCTIONS
         async function runIP() {
             const ip = document.getElementById('ipInp').value;
             const res = document.getElementById('ipRes');
-            res.innerHTML = "Sorgulanıyor...";
+            res.innerHTML = "<div class='text-blue-400 animate-pulse'>Veriler çekiliyor...</div>";
             try {
                 const r = await fetch(`https://ipapi.co/${ip}/json/`);
                 const d = await r.json();
-                res.innerHTML = `<div class='p-4 bg-black/50 rounded-lg text-xs font-mono'>
-                    Konum: ${d.city}, ${d.country_name}<br>
-                    ISP: ${d.org}<br>
-                    ASN: ${d.asn}
+                res.innerHTML = `<div class='p-5 bg-black rounded-xl border border-blue-900/30 text-xs font-mono leading-loose'>
+                    <span class='text-slate-500'>IP:</span> <span class='text-white'>${d.ip}</span><br>
+                    <span class='text-slate-500'>KONUM:</span> <span class='text-white'>${d.city}, ${d.country_name}</span><br>
+                    <span class='text-slate-500'>ISP:</span> <span class='text-white'>${d.org}</span><br>
+                    <span class='text-slate-500'>ZAMAN:</span> <span class='text-white'>${d.timezone}</span>
                 </div>`;
-            } catch(e) { res.innerText = "Hata!"; }
+            } catch(e) { res.innerText = "Hata oluştu!"; }
         }
 
         async function runWS() {
@@ -200,13 +238,25 @@
             try {
                 const r = await fetch(`https://rdap.org/domain/${dom}`);
                 const d = await r.json();
-                res.innerText = JSON.stringify(d, null, 2).slice(0, 1000) + "...";
-            } catch(e) { res.innerText = "RDAP/WHOIS verisi bulunamadı."; }
+                res.innerText = JSON.stringify(d, null, 2);
+            } catch(e) { res.innerText = "Hata: Veri bulunamadı."; }
+        }
+
+        function runJSON() {
+            const t = document.getElementById('jt');
+            try { t.value = JSON.stringify(JSON.parse(t.value), null, 4); } catch(e) { alert("JSON Geçersiz!"); }
+        }
+
+        async function runHash() {
+            const t = document.getElementById('ht');
+            const msgBuffer = new TextEncoder().encode(t.value);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            t.value = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         function filter() {
             const q = document.getElementById('search').value.toLowerCase();
-            document.querySelectorAll('.cyber-card').forEach(c => {
+            document.querySelectorAll('.glass-card').forEach(c => {
                 c.style.display = c.getAttribute('data-name').includes(q) ? "block" : "none";
             });
         }
