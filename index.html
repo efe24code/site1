@@ -6,18 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{background:#020617}
-input,textarea,select{background:#020617;border:1px solid #1e293b;border-radius:.5rem;padding:.5rem;width:100%}
+body { background:#0f172a; color:#e2e8f0; font-family:sans-serif; }
+input,textarea,select { width:100%; background:#020617; border:1px solid #1e293b; border-radius:.5rem; padding:.5rem; color:#e2e8f0; }
+.card { transition:.15s; cursor:pointer; border-radius:.75rem; background:#1e293b; padding:1rem; text-align:center; }
+.card:hover { transform:scale(1.03) }
+.btn { background:#2563eb; color:white; font-weight:600; padding:.5rem 1rem; border-radius:.5rem; margin-top:.5rem; display:inline-block }
+pre { background:#020617; padding:.5rem; border-radius:.5rem; overflow-x:auto }
+a{text-decoration:none;}
 </style>
 </head>
-
-<body class="text-slate-200">
+<body>
 
 <div class="max-w-6xl mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-1">⚡ DevTool Lite</h1>
-  <p class="text-slate-400 mb-6">Developer tools & usage docs</p>
+<h1 class="text-3xl font-bold mb-2">⚡ DevTool Lite</h1>
+<p class="text-slate-400 mb-6">Developer Tools + Multi-language docs</p>
 
-  <div id="app"></div>
+<input id="search" placeholder="Search tool..." class="mb-6">
+
+<div id="app"></div>
 </div>
 
 <script src="./tools.js"></script>
@@ -27,48 +33,48 @@ const app=document.getElementById("app")
 
 function router(){
   const hash=location.hash
-  if(!hash||hash==="#/"){
-    renderHome()
-    return
-  }
-  const id=hash.replace("#/tool/","")
-  renderTool(id)
+  if(!hash||hash==="#/"){ renderHome(); return }
+  if(hash.startsWith("#/tool/")) renderTool(hash.replace("#/tool/",""))
+  else renderHome()
 }
 
 function renderHome(){
-  app.innerHTML=`
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      ${DEVTOOLS.tools.map(t=>`
-        <a href="#/tool/${t.id}" class="bg-slate-900 p-4 rounded-xl hover:scale-105 transition">
-          <div class="text-2xl">${t.icon}</div>
-          <div class="font-semibold mt-2">${t.name}</div>
-          <div class="text-xs text-slate-400">${t.cat}</div>
-        </a>`).join("")}
-    </div>`
+  app.innerHTML='<div class="grid grid-cols-2 md:grid-cols-4 gap-4">'+
+  DEVTOOLS.tools.map(t=>`<a href="#/tool/${t.id}" class="card">
+    <div class="text-3xl mb-2">${t.icon}</div>
+    <div class="font-semibold">${t.name}</div>
+    <div class="text-xs text-slate-400">${t.cat}</div>
+  </a>`).join('')+'</div>'
 }
 
 function renderTool(id){
   const t=DEVTOOLS.logic[id]
-  if(!t){app.innerHTML="Tool not found";return}
-  app.innerHTML=`
-    <a href="#/" class="text-blue-400">← back</a>
-    <h2 class="text-2xl font-bold mt-3">${t.name}</h2>
-
-    <div class="grid md:grid-cols-2 gap-6 mt-6">
-      <div class="bg-slate-900 p-4 rounded-xl">
-        ${t.ui}
-        <button onclick="DEVTOOLS.logic['${id}'].run()" class="mt-4 bg-blue-600 px-4 py-2 rounded">RUN</button>
-      </div>
-
-      <div class="bg-slate-900 p-4 rounded-xl">
-        <h3 class="font-semibold mb-2">📘 How to use</h3>
-        <pre class="text-xs whitespace-pre-wrap">${t.docs}</pre>
-      </div>
+  if(!t){app.innerHTML="Tool not found"; return}
+  app.innerHTML=`<a href="#/" class="text-blue-400">← back</a>
+  <h2 class="text-2xl font-bold mt-3">${t.name}</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-4">
+    <div class="bg-slate-900 p-4 rounded-xl">
+      ${t.ui}
+      <button class="btn" onclick="DEVTOOLS.logic['${id}'].run()">RUN</button>
     </div>
-  `
+    <div class="bg-slate-900 p-4 rounded-xl">
+      <h3 class="font-semibold mb-2">📘 How to use</h3>
+      <pre class="text-xs whitespace-pre-wrap">${t.docs}</pre>
+    </div>
+  </div>`
 }
 
 window.addEventListener("hashchange",router)
+document.getElementById("search").addEventListener("input",()=>{
+  const q=document.getElementById("search").value.toLowerCase()
+  const filtered=DEVTOOLS.tools.filter(t=>t.name.toLowerCase().includes(q))
+  app.innerHTML='<div class="grid grid-cols-2 md:grid-cols-4 gap-4">'+
+  filtered.map(t=>`<a href="#/tool/${t.id}" class="card">
+    <div class="text-3xl mb-2">${t.icon}</div>
+    <div class="font-semibold">${t.name}</div>
+    <div class="text-xs text-slate-400">${t.cat}</div>
+  </a>`).join('')+'</div>'
+})
 router()
 </script>
 
