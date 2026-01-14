@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevTool-Lite | Gelişmiş Geliştirici Araçları</title>
+    <title>DevTool-Lite | Advanced Developer Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,7 @@
         .glass-card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; transition: 0.3s; }
         .glass-card:hover { border-color: #58a6ff; transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        #sidebar { width: 80px; position: fixed; left: 0; top: 0; height: 100vh; background: #010409; border-right: 1px solid #30363d; z-index: 100; transition: 0.3s; }
+        #sidebar { width: 80px; position: fixed; left: 0; top: 0; height: 100vh; background: #010409; border-right: 1px solid #30363d; z-index: 100; }
         .main-content { margin-left: 80px; padding: 40px; min-height: 100vh; }
         
         .code-box { background: #010409; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
@@ -22,6 +22,12 @@
         input:focus { border-color: #58a6ff !important; }
         .hidden { display: none; }
         .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
     </style>
 </head>
 <body>
@@ -29,7 +35,7 @@
     <div id="sidebar" class="flex flex-col items-center py-10">
         <div onclick="goHome()" class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black cursor-pointer mb-10 shadow-lg shadow-blue-500/20">DL</div>
         <div class="flex flex-col gap-8 text-slate-500 text-[10px] font-bold tracking-widest">
-            <span class="rotate-90">MENU</span>
+            <span class="rotate-90">DASHBOARD</span>
         </div>
     </div>
 
@@ -37,59 +43,60 @@
         <div id="home">
             <header class="mb-12">
                 <h1 class="text-4xl font-black tracking-tight text-white">DEVTOOL<span class="text-blue-500">-LITE</span></h1>
-                <p class="text-slate-500 text-sm mt-1">Hızlı, Güvenli ve Kapsamlı Geliştirici Ekosistemi</p>
+                <p class="text-slate-500 text-sm mt-1">Fast, Secure and Comprehensive Developer Hub</p>
                 <div class="mt-8 max-w-xl">
-                    <input type="text" id="search" onkeyup="filter()" placeholder="Araçlarda ara (IP, Whois, JSON...)" class="shadow-xl">
+                    <input type="text" id="search" onkeyup="filter()" placeholder="Search tools (IP, Whois, JSON...)" class="shadow-xl">
                 </div>
             </header>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="toolGrid">
-                <div onclick="openTool('ip')" class="glass-card p-6 cursor-pointer" data-name="ip tracker sorgu location">
+                <div onclick="openTool('ip')" class="glass-card p-6 cursor-pointer" data-name="ip tracker geolocation network">
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-blue-400 text-2xl font-bold">IP</span>
                         <span class="badge bg-blue-500/10 text-blue-500">Network</span>
                     </div>
                     <div class="text-sm font-bold text-white uppercase">IP Tracker</div>
-                    <p class="text-xs text-slate-500 mt-2">Detaylı konum ve ISP analizi yapar.</p>
+                    <p class="text-xs text-slate-500 mt-2">Detailed geolocation and ISP analysis.</p>
                 </div>
 
-                <div onclick="openTool('whois')" class="glass-card p-6 cursor-pointer" data-name="whois domain site sorgu dns">
+                <div onclick="openTool('whois')" class="glass-card p-6 cursor-pointer" data-name="whois domain site lookup dns">
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-purple-400 text-2xl font-bold">WS</span>
                         <span class="badge bg-purple-500/10 text-purple-500">Domain</span>
                     </div>
                     <div class="text-sm font-bold text-white uppercase">Whois Lookup</div>
-                    <p class="text-xs text-slate-500 mt-2">Alan adı kayıt ve RDAP bilgilerini getirir.</p>
+                    <p class="text-xs text-slate-500 mt-2">Check domain registration and RDAP data.</p>
                 </div>
 
-                <div onclick="openTool('json')" class="glass-card p-6 cursor-pointer" data-name="json beautifier formatter">
+                <div onclick="openTool('json')" class="glass-card p-6 cursor-pointer" data-name="json beautifier formatter clean">
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-orange-400 text-2xl font-bold">{ }</span>
                         <span class="badge bg-orange-500/10 text-orange-500">Data</span>
                     </div>
                     <div class="text-sm font-bold text-white uppercase">JSON Formatter</div>
-                    <p class="text-xs text-slate-500 mt-2">Karmaşık verileri okunabilir hale getirir.</p>
+                    <p class="text-xs text-slate-500 mt-2">Make complex data structures readable.</p>
                 </div>
 
-                <div onclick="openTool('hash')" class="glass-card p-6 cursor-pointer" data-name="sha256 hash security crypto">
+                <div onclick="openTool('hash')" class="glass-card p-6 cursor-pointer" data-name="sha256 hash security crypto encrypt">
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-emerald-400 text-2xl font-bold">#</span>
                         <span class="badge bg-emerald-500/10 text-emerald-500">Crypto</span>
                     </div>
                     <div class="text-sm font-bold text-white uppercase">SHA-256 Hasher</div>
-                    <p class="text-xs text-slate-500 mt-2">Verileri saniyeler içinde şifreler.</p>
+                    <p class="text-xs text-slate-500 mt-2">Generate secure hashes in seconds.</p>
                 </div>
             </div>
         </div>
 
         <div id="interface" class="hidden animate-in fade-in duration-300">
             <div class="flex items-center gap-4 mb-10">
-                <button onclick="goHome()" class="px-4 py-2 bg-white/5 rounded-lg hover:bg-white/10 transition text-sm">← Ana Sayfa</button>
-                <h2 id="toolTitle" class="text-3xl font-black text-white">TOOL</h2>
+                <button onclick="goHome()" class="px-4 py-2 bg-white/5 rounded-lg hover:bg-white/10 transition text-sm">← Back Home</button>
+                <h2 id="toolTitle" class="text-3xl font-black text-white uppercase">TOOL</h2>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div class="glass-card p-8 h-fit">
+                    <div class="text-[10px] font-bold text-slate-500 mb-6 tracking-widest uppercase">Live Workspace</div>
                     <div id="toolUI"></div>
                 </div>
 
@@ -101,15 +108,15 @@
                             <div onclick="setLang('php')" class="tab-btn" id="l-php">PHP</div>
                         </div>
                         <div class="flex">
-                            <div onclick="setLvl('simple')" class="tab-btn active" id="v-simple">Basit</div>
-                            <div onclick="setLvl('mid')" class="tab-btn" id="v-mid">Orta</div>
-                            <div onclick="setLvl('hard')" class="tab-btn" id="v-hard">Zor</div>
+                            <div onclick="setLvl('simple')" class="tab-btn active" id="v-simple">Basic</div>
+                            <div onclick="setLvl('mid')" class="tab-btn" id="v-mid">Medium</div>
+                            <div onclick="setLvl('hard')" class="tab-btn" id="v-hard">Advanced</div>
                         </div>
                     </div>
 
                     <div class="code-box">
                         <div class="bg-[#161b22] px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Örnek Kaynak Kod</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sample Source Code</span>
                             <div class="flex gap-1.5">
                                 <div class="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40"></div>
                                 <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40"></div>
@@ -129,11 +136,11 @@
         const db = {
             ip: {
                 title: "IP TRACKER",
-                ui: `<input id="ipInp" placeholder="IP Adresi (Boş = Seninki)"><button onclick="runIP()" class="bg-blue-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">SORGULA</button><div id="ipRes" class="mt-6"></div>`,
+                ui: `<input id="ipInp" placeholder="Enter IP (Leave empty for yours)"><button onclick="runIP()" class="bg-blue-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">SCAN IP</button><div id="ipRes" class="mt-6"></div>`,
                 js: {
-                    simple: `// Basit İstek\nfetch("https://ipapi.co/json/").then(r => r.json()).then(console.log);`,
+                    simple: `// Basic Fetch\nfetch("https://ipapi.co/json/").then(r => r.json()).then(console.log);`,
                     mid: `async function getIPInfo(ip = "") {\n  const response = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n  const data = await response.json();\n  return data;\n}`,
-                    hard: `// Pro Class Yapısı\nclass NetworkInfo {\n  async get(ip) {\n    try {\n      const res = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n      return await res.json();\n    } catch(err) { throw new Error("API Hatası"); }\n  }\n}`
+                    hard: `// Pro Class implementation\nclass NetworkInfo {\n  async get(ip) {\n    try {\n      const res = await fetch(\`https://ipapi.co/\${ip}/json/\`);\n      return await res.json();\n    } catch(err) { throw new Error("API Connection Failed"); }\n  }\n}`
                 },
                 py: {
                     simple: `import requests\nprint(requests.get("https://ipapi.co/json/").json())`,
@@ -148,11 +155,11 @@
             },
             whois: {
                 title: "WHOIS LOOKUP",
-                ui: `<input id="wsInp" placeholder="example.com"><button onclick="runWS()" class="bg-purple-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-purple-500 transition">WHOIS ÇEK</button><pre id="wsRes" class="mt-6 text-[11px] text-purple-400 font-mono overflow-x-auto whitespace-pre-wrap"></pre>`,
+                ui: `<input id="wsInp" placeholder="e.g. google.com"><button onclick="runWS()" class="bg-purple-600 w-full mt-4 py-4 rounded-xl font-bold text-white hover:bg-purple-500 transition">RUN LOOKUP</button><pre id="wsRes" class="mt-6 text-[11px] text-purple-400 font-mono overflow-x-auto whitespace-pre-wrap"></pre>`,
                 js: {
                     simple: `fetch("https://rdap.org/domain/google.com");`,
                     mid: `async function checkWhois(domain) {\n  const res = await fetch(\`https://rdap.org/domain/\${domain}\`);\n  return await res.json();\n}`,
-                    hard: `// RDAP Parser Integration\nconst fetchWhois = async (dom) => {\n  const data = await (await fetch("https://rdap.org/domain/"+dom)).json();\n  console.log("Registered to: " + data.entities[0].vcardArray[1][2][3]);\n};`
+                    hard: `// Pro RDAP Parser\nconst fetchWhois = async (dom) => {\n  const data = await (await fetch("https://rdap.org/domain/"+dom)).json();\n  console.log("Registered to: " + data.entities[0].vcardArray[1][2][3]);\n};`
                 },
                 py: {
                     simple: `import whois\nprint(whois.whois("google.com"))`,
@@ -167,16 +174,16 @@
             },
             json: {
                 title: "JSON FORMATTER",
-                ui: `<textarea id="jt" rows="10" placeholder='{"data": "raw"}'></textarea><button onclick="runJSON()" class="bg-orange-600 w-full mt-4 py-4 rounded-xl font-bold text-white">FORMATLA</button>`,
-                js: { simple: `JSON.stringify(obj, null, 2);`, mid: `JSON.stringify(JSON.parse(input), null, 4);`, hard: `// Deep Clean & Sort JSON Logic` },
+                ui: `<textarea id="jt" rows="10" placeholder='{"meta": "raw"}'></textarea><button onclick="runJSON()" class="bg-orange-600 w-full mt-4 py-4 rounded-xl font-bold text-white">BEAUTIFY JSON</button>`,
+                js: { simple: `JSON.stringify(obj, null, 2);`, mid: `JSON.stringify(JSON.parse(input), null, 4);`, hard: `// Deep Clean & Sort Logic` },
                 py: { simple: `json.dumps(d, indent=2)`, mid: `json.dumps(json.loads(s), indent=4, sort_keys=True)`, hard: `# Custom Encoder Class` },
                 php: { simple: `json_encode($d, 128);`, mid: `json_encode(json_decode($s), JSON_PRETTY_PRINT);`, hard: `// Nested Array Handler` }
             },
             hash: {
                 title: "SHA-256 HASHER",
-                ui: `<input id="ht" placeholder="Metin girin..."><button onclick="runHash()" class="bg-emerald-600 w-full mt-4 py-4 rounded-xl font-bold text-white">HASH ÜRET</button>`,
-                js: { simple: `crypto.subtle.digest('SHA-256', data);`, mid: `// Async SubtleCrypto Logic`, hard: `// HMAC-SHA256 Auth implementation` },
-                py: { simple: `hashlib.sha256(b'txt').hexdigest()`, mid: `hashlib.sha256(text.encode()).hexdigest()`, hard: `// Password Salted Hash Logic` },
+                ui: `<input id="ht" placeholder="Type text here..."><button onclick="runHash()" class="bg-emerald-600 w-full mt-4 py-4 rounded-xl font-bold text-white">GENERATE HASH</button>`,
+                js: { simple: `crypto.subtle.digest('SHA-256', data);`, mid: `// Async SubtleCrypto implementation`, hard: `// HMAC-SHA256 Auth Logic` },
+                py: { simple: `hashlib.sha256(b'txt').hexdigest()`, mid: `hashlib.sha256(text.encode()).hexdigest()`, hard: `// Password Salting Logic` },
                 php: { simple: `hash('sha256', 'txt');`, mid: `password_hash($p, PASSWORD_BCRYPT);`, hard: `// PBKDF2 logic` }
             }
         };
@@ -210,41 +217,40 @@
         }
 
         function updateCode() {
-            const code = db[curTool][curLang][curLvl] || "// Örnek hazırlanıyor...";
+            const code = db[curTool][curLang][curLvl] || "// Snippet coming soon...";
             document.getElementById('codeDisplay').innerText = code;
         }
 
-        // EXEC FUNCTIONS
         async function runIP() {
             const ip = document.getElementById('ipInp').value;
             const res = document.getElementById('ipRes');
-            res.innerHTML = "<div class='text-blue-400 animate-pulse'>Veriler çekiliyor...</div>";
+            res.innerHTML = "<div class='text-blue-400 animate-pulse'>Fetching data...</div>";
             try {
                 const r = await fetch(`https://ipapi.co/${ip}/json/`);
                 const d = await r.json();
                 res.innerHTML = `<div class='p-5 bg-black rounded-xl border border-blue-900/30 text-xs font-mono leading-loose'>
                     <span class='text-slate-500'>IP:</span> <span class='text-white'>${d.ip}</span><br>
-                    <span class='text-slate-500'>KONUM:</span> <span class='text-white'>${d.city}, ${d.country_name}</span><br>
+                    <span class='text-slate-500'>LOCATION:</span> <span class='text-white'>${d.city}, ${d.country_name}</span><br>
                     <span class='text-slate-500'>ISP:</span> <span class='text-white'>${d.org}</span><br>
-                    <span class='text-slate-500'>ZAMAN:</span> <span class='text-white'>${d.timezone}</span>
+                    <span class='text-slate-500'>TIMEZONE:</span> <span class='text-white'>${d.timezone}</span>
                 </div>`;
-            } catch(e) { res.innerText = "Hata oluştu!"; }
+            } catch(e) { res.innerText = "Error fetching data!"; }
         }
 
         async function runWS() {
             const dom = document.getElementById('wsInp').value;
             const res = document.getElementById('wsRes');
-            res.innerText = "RDAP Protokolü taranıyor...";
+            res.innerText = "Polling RDAP server...";
             try {
                 const r = await fetch(`https://rdap.org/domain/${dom}`);
                 const d = await r.json();
                 res.innerText = JSON.stringify(d, null, 2);
-            } catch(e) { res.innerText = "Hata: Veri bulunamadı."; }
+            } catch(e) { res.innerText = "Error: Domain info not found."; }
         }
 
         function runJSON() {
             const t = document.getElementById('jt');
-            try { t.value = JSON.stringify(JSON.parse(t.value), null, 4); } catch(e) { alert("JSON Geçersiz!"); }
+            try { t.value = JSON.stringify(JSON.parse(t.value), null, 4); } catch(e) { alert("Invalid JSON!"); }
         }
 
         async function runHash() {
