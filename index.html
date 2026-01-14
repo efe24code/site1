@@ -3,154 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevTool-Lite | Advanced Network Tools</title>
+    <title>DevTool-Lite | Mega Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #0b0f1a; color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 14px; }
+        body { background: #0b0f1a; color: #e2e8f0; font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 13px; }
         .glass { background: rgba(23, 28, 41, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .tool-card { transition: 0.2s; cursor: pointer; border: 1px solid rgba(255,255,255,0.03); }
-        .tool-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); transform: translateY(-3px); }
+        .tool-card { transition: 0.2s; cursor: pointer; border: 1px solid rgba(255,255,255,0.03); background: rgba(30, 41, 59, 0.4); }
+        .tool-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
         
-        #sidebar { transition: 0.3s ease-in-out; transform: translateX(-100%); width: 70px; position: fixed; left: 0; top: 0; height: 100vh; background: #0f172a; border-right: 1px solid #1e293b; z-index: 50; }
+        #sidebar { transition: 0.3s; transform: translateX(-100%); width: 65px; position: fixed; left: 0; top: 0; height: 100vh; background: #0f172a; border-right: 1px solid #1e293b; z-index: 100; overflow-y: auto; }
         #sidebar.open { transform: translateX(0); }
-        .side-item { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin: 12px auto; border-radius: 12px; cursor: pointer; transition: 0.2s; background: #161b22; font-size: 10px; font-weight: bold; color: #475569; }
-        .side-item:hover, .side-item.active { background: #3b82f6; color: white; }
+        .side-item { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 10px auto; border-radius: 10px; cursor: pointer; transition: 0.2s; background: #161b22; font-size: 10px; font-weight: bold; color: #475569; }
+        .side-item:hover { background: #3b82f6; color: white; }
 
-        .flow-line { position: absolute; width: 2px; background: linear-gradient(to bottom, #3b82f6, #8b5cf6); left: 50%; transform: translateX(-50%); z-index: -1; }
-        .node-dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 0 8px #3b82f6; }
-        
         .code-block { background: #010409; border: 1px solid #30363d; font-family: 'Fira Code', monospace; font-size: 11px; padding: 12px; border-radius: 8px; color: #7ee787; overflow-x: auto; }
-        .lang-tab { padding: 4px 8px; font-size: 9px; border-radius: 4px; cursor: pointer; opacity: 0.5; font-weight: bold; }
-        .lang-tab.active { background: #3b82f6; opacity: 1; color: white; }
-        
-        textarea, input { background: #161b22 !important; border: 1px solid #30363d !important; color: #58a6ff !important; font-size: 12px !important; width: 100%; border-radius: 8px; padding: 10px; outline: none; }
+        textarea, input, select { background: #161b22 !important; border: 1px solid #30363d !important; color: #58a6ff !important; font-size: 12px !important; width: 100%; border-radius: 8px; padding: 10px; outline: none; margin-bottom: 8px; }
         .main-content { transition: 0.3s; }
-        .shifted { margin-left: 70px; }
+        .shifted { margin-left: 65px; }
         .hidden { display: none; }
         
-        /* IP Info Grid */
-        .ip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .ip-item { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
-        .ip-label { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; }
-        .ip-value { font-size: 11px; color: #cbd5e1; font-family: 'Fira Code'; }
+        /* Grid Layout */
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .cat-title { font-size: 10px; font-weight: 800; color: #4b5563; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #1e293b; padding-bottom: 4px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-6">
 
-    <div id="sidebar" class="flex flex-col py-4">
-        <div onclick="goHome()" class="side-item bg-red-500/20 text-red-500">HOME</div>
-        <div onclick="openTool('json')" class="side-item">JS</div>
-        <div onclick="openTool('b64')" class="side-item">B64</div>
-        <div onclick="openTool('jwt')" class="side-item">JWT</div>
-        <div onclick="openTool('ip')" class="side-item">IP</div>
+    <div id="sidebar" class="flex flex-col py-2 no-scrollbar">
+        <div onclick="goHome()" class="side-item text-blue-400 border border-blue-500/20">H</div>
+        <div id="side-list"></div>
     </div>
 
     <div id="main-wrapper" class="main-content">
-        <div id="home" class="max-w-4xl mx-auto mt-6">
-            <div class="text-center mb-10">
-                <h1 class="text-4xl font-black tracking-tighter text-white uppercase italic">DEVTOOL<span class="text-blue-500">-LITE</span></h1>
-                <div class="mt-4 max-w-xs mx-auto">
-                    <input type="text" id="toolSearch" onkeyup="filterTools()" placeholder="Araç ara..." class="text-center">
-                </div>
+        <div id="home" class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-black tracking-tighter text-white">DEVTOOL<span class="text-blue-500">-LITE</span></h1>
+                <input type="text" id="toolSearch" onkeyup="filterTools()" placeholder="100+ araç içinde ara..." class="!w-64 !mb-0 text-center">
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="toolGrid">
-                <div onclick="openTool('json')" class="tool-card glass p-6 rounded-2xl text-center" data-name="json">
-                    <div class="text-2xl mb-1 text-blue-400 font-bold">{ }</div>
-                    <div class="text-[10px] text-slate-400 uppercase font-bold">JSON Format</div>
+            <div id="categories">
                 </div>
-                <div onclick="openTool('ip')" class="tool-card glass p-6 rounded-2xl text-center border-indigo-500/30 shadow-indigo-500/10 shadow-lg" data-name="ip">
-                    <div class="text-2xl mb-1 text-indigo-400 font-bold">IP</div>
-                    <div class="text-[10px] text-slate-400 uppercase font-bold">Any IP Tracker</div>
-                </div>
-                <div onclick="openTool('b64')" class="tool-card glass p-6 rounded-2xl text-center" data-name="base64">
-                    <div class="text-2xl mb-1 text-emerald-400 font-bold">A|z</div>
-                    <div class="text-[10px] text-slate-400 uppercase font-bold">Base64</div>
-                </div>
-                <div onclick="openTool('jwt')" class="tool-card glass p-6 rounded-2xl text-center" data-name="jwt">
-                    <div class="text-2xl mb-1 text-yellow-400 font-bold">JWT</div>
-                    <div class="text-[10px] text-slate-400 uppercase font-bold">Token Decode</div>
-                </div>
-            </div>
         </div>
 
-        <div id="interface" class="max-w-2xl mx-auto hidden pt-6">
-            <div class="relative flex flex-col gap-6">
-                <div class="glass p-6 rounded-3xl relative shadow-2xl">
-                    <h2 id="tool-title" class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Tool</h2>
-                    <div id="tool-ui"></div>
-                    <div class="node-dot -bottom-1"></div>
+        <div id="interface" class="max-w-3xl mx-auto hidden">
+            <div class="glass p-6 rounded-3xl relative shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="tool-title" class="text-sm font-bold text-blue-400 uppercase tracking-widest">Tool</h2>
+                    <button onclick="goHome()" class="text-[10px] text-slate-500 hover:text-white">KAPAT [X]</button>
                 </div>
-
-                <div class="flow-line h-6"></div>
-
-                <div class="glass p-6 rounded-3xl relative border-emerald-500/20">
-                    <div class="node-dot -top-1 bg-emerald-500"></div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-[10px] font-bold text-emerald-500 uppercase italic">Code Snippet</span>
-                        <div class="flex gap-2">
-                            <span onclick="setLang('js')" class="lang-tab active" id="tab-js">JS</span>
-                            <span onclick="setLang('py')" class="lang-tab" id="tab-py">PY</span>
-                            <span onclick="setLang('php')" class="lang-tab" id="tab-php">PHP</span>
-                        </div>
-                    </div>
-                    <pre class="code-block" id="code-display"></pre>
-                </div>
+                <div id="tool-ui"></div>
+            </div>
+            
+            <div class="mt-6 glass p-6 rounded-3xl border-emerald-500/10">
+                <h3 class="text-[10px] font-bold text-emerald-500 uppercase mb-3 tracking-widest">Snippet</h3>
+                <pre class="code-block" id="code-display"></pre>
             </div>
         </div>
     </div>
 
     <script>
         let currentTool = "";
-        let currentLang = "js";
+        
+        const tools = [
+            { id: 'json', cat: 'Data', name: 'JSON Formatter', icon: '{ }' },
+            { id: 'ip', cat: 'Network', name: 'IP Tracker', icon: 'IP' },
+            { id: 'b64', cat: 'Crypto', name: 'Base64', icon: 'B64' },
+            { id: 'jwt', cat: 'Security', name: 'JWT Decoder', icon: 'JWT' },
+            { id: 'hash', cat: 'Crypto', name: 'SHA-256', icon: '#' },
+            { id: 'pass', cat: 'Security', name: 'Pass Gen', icon: '***' },
+            { id: 'color', cat: 'Design', name: 'Color Palette', icon: 'COL' },
+            { id: 'unix', cat: 'Data', name: 'Unix Time', icon: 'TS' },
+            { id: 'lorem', cat: 'Text', name: 'Lorem Ipsum', icon: 'TXT' },
+            { id: 'url', cat: 'Network', name: 'URL Encoder', icon: 'URL' },
+            { id: 'regex', cat: 'Text', name: 'Regex Test', icon: 'RE' },
+            { id: 'pxrem', cat: 'Design', name: 'PX to REM', icon: 'PX' }
+        ];
 
-        const db = {
+        const logic = {
             json: {
-                title: "JSON Formatter",
-                ui: `<textarea id="inp" rows="6" placeholder='{"key":"value"}'></textarea><button onclick="doJSON()" class="bg-blue-600 w-full mt-3 py-3 rounded-xl font-bold text-xs">BEAUTIFY</button>`,
-                js: `const out = JSON.stringify(JSON.parse(input), null, 4);`,
-                py: `import json\nprint(json.dumps(json.loads(data), indent=4))`,
-                php: `$data = json_decode($input);`
+                ui: `<textarea id="inp" rows="8"></textarea><button onclick="runJSON()" class="bg-blue-600 w-full p-3 rounded-xl font-bold">FORMAT</button>`,
+                code: `JSON.stringify(JSON.parse(i), null, 4)`
             },
             ip: {
-                title: "Universal IP Tracker",
-                ui: `<div class="flex gap-2 mb-4">
-                        <input id="targetIp" placeholder="8.8.8.8 veya boş bırak (Kendi IP'n)">
-                        <button onclick="doIP()" class="bg-indigo-600 px-6 rounded-xl font-bold text-xs">SORGULA</button>
-                     </div>
-                     <div id="ipDetails">
-                        <div class="text-center p-4 bg-black/40 rounded-xl text-slate-600 text-xs italic">Hedef IP girin veya Sorgula'ya basın.</div>
-                     </div>`,
-                js: `// Fetch Specific IP\nconst ip = document.getElementById('targetIp').value;\nconst res = await fetch(\`https://ipapi.co/\${ip}/json/\`);`,
-                py: `import requests\nip = "8.8.8.8"\ndata = requests.get(f'https://ipapi.co/{ip}/json/').json()`,
-                php: `$ip = "8.8.8.8";\n$res = json_decode(file_get_contents("https://ipapi.co/$ip/json/"));`
+                ui: `<input id="ipInp" placeholder="8.8.8.8"><button onclick="runIP()" class="bg-indigo-600 w-full p-3 rounded-xl font-bold">SORGULA</button><div id="ipRes" class="mt-4"></div>`,
+                code: `fetch('https://ipapi.co/json/')`
             },
-            b64: {
-                title: "Base64 Converter",
-                ui: `<textarea id="inp" rows="4"></textarea><div class="flex gap-2 mt-3"><button onclick="doB64('e')" class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold text-xs">ENCODE</button><button onclick="doB64('d')" class="flex-1 bg-purple-600 py-3 rounded-xl font-bold text-xs">DECODE</button></div>`,
-                js: `btoa(input);`,
-                py: `import base64`,
-                php: `base64_encode('text');`
+            color: {
+                ui: `<input type="color" id="clr" onchange="runColor()"><div id="clrRes" class="mt-4 p-8 rounded-xl text-center font-bold">#000000</div>`,
+                code: `// Selected hex color implementation`
             },
-            jwt: {
-                title: "JWT Decoder",
-                ui: `<input id="inp" placeholder="token..."><button onclick="doJWT()" class="bg-yellow-600 w-full mt-3 py-3 rounded-xl font-bold text-xs">DECODE</button><pre id="jwtRes" class="hidden mt-3 p-3 bg-black/50 rounded text-[10px] text-yellow-200 overflow-x-auto"></pre>`,
-                js: `JSON.parse(atob(token.split('.')[1]));`,
-                py: `import jwt`,
-                php: `base64_decode(explode('.', $token)[1]);`
+            pass: {
+                ui: `<input id="pRes" readonly><button onclick="runPass()" class="bg-orange-600 w-full p-3 rounded-xl font-bold">ÜRET</button>`,
+                code: `Math.random().toString(36)`
             }
+            // Diğer tool logicleri buraya eklenecek...
         };
 
-        function openTool(key) {
-            currentTool = key;
+        function init() {
+            const cats = [...new Set(tools.map(t => t.cat))];
+            const container = document.getElementById('categories');
+            const side = document.getElementById('side-list');
+            
+            cats.forEach(c => {
+                container.innerHTML += `<div class="cat-title">${c} Tools</div><div class="tool-grid" id="grid-${c}"></div>`;
+                side.innerHTML += `<div class="side-item" onclick="openCat('${c}')">${c[0]}</div>`;
+            });
+
+            tools.forEach(t => {
+                const grid = document.getElementById(`grid-${t.cat}`);
+                grid.innerHTML += `
+                    <div onclick="openTool('${t.id}')" class="tool-card glass p-4 rounded-xl text-center" data-name="${t.name.toLowerCase()}">
+                        <div class="text-lg font-bold text-blue-400 mb-1">${t.icon}</div>
+                        <div class="text-[9px] font-bold uppercase text-slate-400">${t.name}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function openTool(id) {
+            currentTool = id;
             document.getElementById('home').classList.add('hidden');
             document.getElementById('interface').classList.remove('hidden');
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('main-wrapper').classList.add('shifted');
-            document.getElementById('tool-title').innerText = db[key].title;
-            document.getElementById('tool-ui').innerHTML = db[key].ui;
-            updateCode();
+            
+            document.getElementById('tool-title').innerText = id.toUpperCase();
+            document.getElementById('tool-ui').innerHTML = logic[id]?.ui || "Çok yakında eklenecek...";
+            document.getElementById('code-display').innerText = logic[id]?.code || "// Snippet not available";
         }
 
         function goHome() {
@@ -160,78 +140,25 @@
             document.getElementById('main-wrapper').classList.remove('shifted');
         }
 
-        function setLang(l) {
-            currentLang = l;
-            document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + l).classList.add('active');
-            updateCode();
-        }
-
-        function updateCode() { document.getElementById('code-display').innerText = db[currentTool][currentLang]; }
-
         function filterTools() {
-            let val = document.getElementById('toolSearch').value.toLowerCase();
-            document.querySelectorAll('.tool-card').forEach(card => {
-                card.style.display = card.getAttribute('data-name').includes(val) ? "block" : "none";
+            const val = document.getElementById('toolSearch').value.toLowerCase();
+            document.querySelectorAll('.tool-card').forEach(c => {
+                c.style.display = c.getAttribute('data-name').includes(val) ? "block" : "none";
             });
         }
 
-        // --- IP LOGIC UPDATE ---
-        async function doIP() {
-            const ipInput = document.getElementById('targetIp').value.trim();
-            const container = document.getElementById('ipDetails');
-            container.innerHTML = `<div class="text-center py-4 text-indigo-400 animate-pulse font-mono text-xs">Searching for ${ipInput || 'Local IP'}...</div>`;
-            
-            try {
-                // ipapi.co format: ipapi.co/{ip}/json/ or ipapi.co/json/ for own ip
-                const url = ipInput ? `https://ipapi.co/${ipInput}/json/` : `https://ipapi.co/json/`;
-                const res = await fetch(url);
-                const d = await res.json();
-
-                if(d.error) throw new Error(d.reason);
-
-                container.innerHTML = `
-                    <div class="ip-grid">
-                        <div class="ip-item"><div class="ip-label">IP Address</div><div class="ip-value text-indigo-400">${d.ip}</div></div>
-                        <div class="ip-item"><div class="ip-label">Country</div><div class="ip-value">${d.country_name} ${d.country_emoji || ''}</div></div>
-                        <div class="ip-item"><div class="ip-label">City/Region</div><div class="ip-value">${d.city}, ${d.region}</div></div>
-                        <div class="ip-item"><div class="ip-label">ISP</div><div class="ip-value">${d.org}</div></div>
-                        <div class="ip-item"><div class="ip-label">Currency</div><div class="ip-value">${d.currency_name}</div></div>
-                        <div class="ip-item"><div class="ip-label">ASN</div><div class="ip-value">${d.asn}</div></div>
-                    </div>
-                    <div class="mt-4 flex gap-2">
-                        <a href="https://www.google.com/maps?q=${d.latitude},${d.longitude}" target="_blank" class="flex-1 bg-white/5 border border-white/10 p-2 rounded-lg text-[10px] text-center hover:bg-white/10 transition">
-                            📍 View on Maps
-                        </a>
-                        <div class="flex-1 bg-white/5 border border-white/10 p-2 rounded-lg text-[10px] text-center">
-                            🕒 ${d.timezone}
-                        </div>
-                    </div>
-                `;
-            } catch(e) { 
-                container.innerHTML = `<div class="text-red-500 text-center p-4 bg-red-500/10 rounded-xl text-xs">Error: ${e.message || 'Invalid IP or API limit reached.'}</div>`; 
-            }
+        // --- Logic Functions ---
+        function runJSON() { const i = document.getElementById('inp'); i.value = JSON.stringify(JSON.parse(i.value), null, 4); }
+        async function runIP() {
+            const ip = document.getElementById('ipInp').value;
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const d = await res.json();
+            document.getElementById('ipRes').innerHTML = `<div class="p-4 bg-black/40 rounded-xl text-xs font-mono">${d.city}, ${d.country_name}<br>ISP: ${d.org}</div>`;
         }
+        function runPass() { document.getElementById('pRes').value = Math.random().toString(36).slice(-12).toUpperCase(); }
+        function runColor() { const c = document.getElementById('clr').value; const r = document.getElementById('clrRes'); r.style.background = c; r.innerText = c; }
 
-        function doJSON() {
-            const i = document.getElementById('inp');
-            try { i.value = JSON.stringify(JSON.parse(i.value), null, 4); } catch(e) { alert("Invalid JSON"); }
-        }
-
-        function doB64(m) {
-            const i = document.getElementById('inp');
-            try { i.value = (m=='e')?btoa(i.value):atob(i.value); } catch(e) { alert("B64 Error"); }
-        }
-
-        function doJWT() {
-            const val = document.getElementById('inp').value;
-            const res = document.getElementById('jwtRes');
-            try {
-                const p = JSON.parse(atob(val.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-                res.innerText = JSON.stringify(p, null, 4);
-                res.classList.remove('hidden');
-            } catch(e) { alert("Invalid JWT"); }
-        }
+        init();
     </script>
 </body>
 </html>
