@@ -2,111 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DevTool Lite</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DevTool-Lite | Ultimate</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-body { background:#0f172a; color:#e2e8f0; font-family:'Inter',sans-serif; }
-.card { transition:.15s; cursor:pointer; border-radius:.75rem; background:#1e293b; padding:1rem; text-align:center; }
-.card:hover { transform:scale(1.03); box-shadow:0 5px 20px rgba(0,0,0,0.5);}
-textarea,input,select{background:#0f172a;border:1px solid #1e293b;color:#e2e8f0;font-family:'JetBrains Mono',monospace;border-radius:.5rem;padding:.5rem;width:100%;transition:.2s}
-textarea:focus,input:focus,select:focus{border-color:#2563eb;outline:none;box-shadow:0 0 0 3px rgba(37,99,235,0.3)}
-pre{background:#020617;padding:.5rem;border-radius:.5rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px}
-.btn{background:#2563eb;color:white;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;margin-top:.5rem;display:inline-block;transition:.2s}
-.btn:hover{background:#1d4ed8;transform:scale(1.02);}
-</style>
+<link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body class="bg-[#090c10] text-[#c9d1d9] font-['Inter']">
 
-<div class="max-w-6xl mx-auto p-6">
-<h1 class="text-3xl font-bold mb-2">⚡ DevTool Lite</h1>
-<p class="text-slate-400 mb-6">Developer Tools + Multi-language docs</p>
+<div class="glow"></div>
 
-<input id="search" placeholder="Search tool..." class="mb-6 p-3 rounded-md bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-blue-500 w-full">
+<nav id="sidebar">
+  <div onclick="goHome()" class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black cursor-pointer shadow-lg mt-6 hover:scale-110 transition">DL</div>
+  <div class="hide-mobile flex flex-col gap-6 mt-auto mb-10 text-slate-600"></div>
+</nav>
 
-<div id="app"></div>
-</div>
+<main>
+  <div id="homeView" class="animate-[fadeIn_0.5s_ease-out]">
+    <header class="mb-10 text-center md:text-left">
+      <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">DEVTOOL<span class="text-blue-500">LITE</span></h1>
+      <p class="text-slate-500 mt-2 text-sm font-medium">The Ultimate Developer's Pocket Knife</p>
+
+      <div class="mt-8 relative max-w-2xl mx-auto md:mx-0">
+        <input type="text" id="search" onkeyup="filterTools()" placeholder="Search 100+ tools..." class="!pl-12 !py-4 rounded-xl bg-[#010409] border border-[#30363d] text-[#79c0ff] shadow-2xl w-full">
+        <span class="absolute left-4 top-4 text-slate-500">🔍</span>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-6 justify-center md:justify-start" id="categories"></div>
+    </header>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="toolGrid"></div>
+  </div>
+
+  <div id="toolView" class="hidden">
+    <button onclick="goHome()" class="flex items-center gap-2 text-slate-400 hover:text-white transition mb-6 font-bold text-sm">
+      <span>←</span> DASHBOARD
+    </button>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div class="glass-panel p-6 rounded-2xl relative">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#30363d]">
+          <span id="toolIcon" class="text-2xl"></span>
+          <h2 id="toolTitle" class="text-xl font-bold text-white">TOOL NAME</h2>
+        </div>
+        <div id="toolUI"></div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="glass-panel p-2 rounded-xl flex justify-between items-center px-4">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Implementation</span>
+          <div class="flex bg-[#0d1117] rounded-lg p-1">
+            <button onclick="setLang('js')" id="btn-js" class="px-3 py-1 rounded text-[10px] font-bold text-white bg-blue-600">JS</button>
+            <button onclick="setLang('py')" id="btn-py" class="px-3 py-1 rounded text-[10px] font-bold text-slate-500 hover:text-white">PY</button>
+            <button onclick="setLang('php')" id="btn-php" class="px-3 py-1 rounded text-[10px] font-bold text-slate-500 hover:text-white">PHP</button>
+            <button onclick="setLang('bash')" id="btn-bash" class="px-3 py-1 rounded text-[10px] font-bold text-slate-500 hover:text-white">Bash</button>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-xl overflow-hidden relative group">
+          <button onclick="copyCode()" class="btn-copy opacity-0 group-hover:opacity-100 transition">Copy</button>
+          <pre id="codeDisplay" class="p-6 text-green-400 code-preview overflow-x-auto whitespace-pre-wrap"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
 
 <script src="./tools.js"></script>
 <script>
-const app=document.getElementById("app")
-let activeTool=null
-let activeLang='js'
+const DEVTOOLS = {
+  tools: [],
+  logic: {}
+};
 
-function router(){
-  const hash=location.hash
-  if(!hash||hash==="#/"){ renderHome(); return }
-  if(hash.startsWith("#/tool/")) renderTool(hash.replace("#/tool/",""))
-  else renderHome()
-}
-
-function renderHome(){
-  app.innerHTML='<div class="grid grid-cols-2 md:grid-cols-4 gap-4">'+
-  DEVTOOLS.tools.map(t=>`<a href="#/tool/${t.id}" class="card">
-    <div class="text-3xl mb-2">${t.icon}</div>
-    <div class="font-semibold">${t.name}</div>
-    <div class="text-xs text-slate-400">${t.cat}</div>
-  </a>`).join('')+'</div>'
-}
-
-function renderTool(id){
-  const t=DEVTOOLS.logic[id]
-  if(!t){app.innerHTML="Tool not found"; return}
-  activeTool=id
-  app.innerHTML=`<a href="#/" class="text-blue-400">← back</a>
-  <h2 class="text-2xl font-bold mt-3">${t.name}</h2>
-  <div class="grid md:grid-cols-2 gap-6 mt-4">
-    <div class="bg-slate-900 p-4 rounded-xl flex flex-col gap-3">
-      ${t.ui}
-      <div class="flex gap-2 items-center">
-        <button class="btn" onclick="DEVTOOLS.logic['${id}'].run()">RUN</button>
-        <select id="langSelect" class="bg-gray-800 text-white rounded-md p-2">
-          <option value="js">JavaScript</option>
-          <option value="py">Python</option>
-          <option value="php">PHP</option>
-          <option value="bash">Bash</option>
-        </select>
-        <button class="btn" onclick="copyCode()">COPY</button>
-      </div>
-      <pre id="codeDisplay">${t.code[activeLang]}</pre>
-    </div>
-    <div class="bg-slate-900 p-4 rounded-xl">
-      <h3 class="font-semibold mb-2">📘 Docs / Usage</h3>
-      <pre class="text-xs whitespace-pre-wrap">${t.docs}</pre>
-    </div>
-  </div>`
-  const selectLang=document.getElementById("langSelect")
-  selectLang.value=activeLang
-  selectLang.addEventListener("change",e=>{
-    activeLang=e.target.value
-    updateCodeDisplay()
+function init() {
+  const grid = document.getElementById("toolGrid")
+  const catDiv = document.getElementById("categories")
+  grid.innerHTML=""
+  catDiv.innerHTML=""
+  const cats = [...new Set(DEVTOOLS.tools.map(t=>t.cat))]
+  cats.unshift("all")
+  cats.forEach(c=>{
+    const chip = document.createElement("span")
+    chip.className="cat-chip " + (c==="all"?"active":"")
+    chip.innerText=c.charAt(0).toUpperCase()+c.slice(1)
+    chip.id="cat-"+c
+    chip.onclick=()=>filterCat(c)
+    catDiv.appendChild(chip)
   })
+
+  DEVTOOLS.tools.forEach(t=>{
+    const el = document.createElement("div")
+    el.className="tool-card p-5 flex flex-col items-center justify-center cursor-pointer text-center h-32"
+    el.dataset.cat=t.cat
+    el.dataset.name=t.name.toLowerCase()
+    el.onclick=()=>loadTool(t.id)
+    el.innerHTML=`<div class="text-3xl mb-3 opacity-80">${t.icon}</div>
+    <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">${t.name}</div>`
+    grid.appendChild(el)
+  })
+}
+
+let activeTool=null
+let activeLang="js"
+
+function loadTool(id){
+  activeTool=id
+  const t = DEVTOOLS.tools.find(x=>x.id===id)
+  const l = DEVTOOLS.logic[id] || {ui:"<p>Loading...</p>", code:{js:"// TODO"}}
+  document.getElementById("homeView").classList.add("hidden")
+  document.getElementById("toolView").classList.remove("hidden")
+  window.scrollTo(0,0)
+  document.getElementById("toolTitle").innerText=t.name
+  document.getElementById("toolIcon").innerText=t.icon
+  document.getElementById("toolUI").innerHTML=l.ui
+  updateCodeDisplay()
+}
+
+function run(action){
+  const l = DEVTOOLS.logic[activeTool]
+  if(l && l.run) l.run(action)
+}
+
+function val(id){return document.getElementById(id).value}
+function out(msg){document.getElementById("out").classList.remove("hidden"); document.getElementById("out").innerText=msg}
+
+function goHome(){
+  document.getElementById("toolView").classList.add("hidden")
+  document.getElementById("homeView").classList.remove("hidden")
+}
+
+function filterTools(){
+  const q=document.getElementById("search").value.toLowerCase()
+  document.querySelectorAll(".tool-card").forEach(c=>{
+    c.style.display=c.dataset.name.includes(q)?"flex":"none"
+  })
+}
+
+function filterCat(cat){
+  document.querySelectorAll(".cat-chip").forEach(c=>c.classList.remove("active"))
+  document.getElementById("cat-"+cat).classList.add("active")
+  document.querySelectorAll(".tool-card").forEach(c=>{
+    if(cat==="all") c.style.display="flex"
+    else c.style.display=c.dataset.cat===cat?"flex":"none"
+  })
+}
+
+function setLang(l){
+  activeLang=l
+  document.querySelectorAll('#toolView button[id^="btn-"]').forEach(b=>{
+    b.className=`px-3 py-1 rounded text-[10px] font-bold ${b.id===`btn-${l}`?"text-white bg-blue-600":"text-slate-500 hover:text-white"}`
+  })
+  updateCodeDisplay()
 }
 
 function updateCodeDisplay(){
   if(!activeTool) return
-  const c=DEVTOOLS.logic[activeTool].code[activeLang]||"// Not available"
+  const c = DEVTOOLS.logic[activeTool]?.code?.[activeLang] || "// Code snippet not available."
   document.getElementById("codeDisplay").innerText=c
 }
 
-function copyCode(){
-  navigator.clipboard.writeText(document.getElementById("codeDisplay").innerText)
-  alert("Code copied!")
-}
+function copyCode(){navigator.clipboard.writeText(document.getElementById("codeDisplay").innerText); alert("Code copied!")}
 
-window.addEventListener("hashchange",router)
-document.getElementById("search").addEventListener("input",()=>{
-  const q=document.getElementById("search").value.toLowerCase()
-  const filtered=DEVTOOLS.tools.filter(t=>t.name.toLowerCase().includes(q))
-  app.innerHTML='<div class="grid grid-cols-2 md:grid-cols-4 gap-4">'+
-  filtered.map(t=>`<a href="#/tool/${t.id}" class="card">
-    <div class="text-3xl mb-2">${t.icon}</div>
-    <div class="font-semibold">${t.name}</div>
-    <div class="text-xs text-slate-400">${t.cat}</div>
-  </a>`).join('')+'</div>'
-})
-router()
+init()
 </script>
 
 </body>
