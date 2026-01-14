@@ -1,0 +1,26 @@
+/* style.css */
+body { background: #090c10; color: #c9d1d9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #090c10; }
+::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+
+.glass-panel { background: rgba(22,27,34,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(48,54,61,0.6); }
+.tool-card { 
+  background: linear-gradient(145deg, #161b22, #0d1117); 
+  border: 1px solid #30363d; border-radius: 16px; 
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative; overflow: hidden;
+}
+.tool-card:hover { transform: translateY(-4px); border-color: #58a6ff; box-shadow: 0 10px 30px -10px rgba(88,166,255,0.2);}
+.tool-card::before {
+  content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+  background: linear-gradient(45deg, transparent, rgba(88,166,255,0.03), transparent);
+  transform: translateX(-100%); transition: 0.5s;
+}
+.tool-card:hover::before { transform: translateX(100%); }
+
+/* Button / Inputs */
+input, textarea, select { background:#010409; border:1px solid #30363d; color:#79c0ff; border-radius:10px; padding:14px; width:100%; font-family:'JetBrains Mono', monospace; font-size:13px; outline:none; transition:0.2s; }
+input:focus, textarea:focus { border-color:#58a6ff; box-shadow:0 0 0 3px rgba(88,166,255,0.1); }
+.btn { background:#238636; color:white; font-weight:700; padding:12px; border-radius:10px; width:100%; transition:0.2s; font-size:13px; letter-spacing:0.5px; cursor:pointer;}
+.btn:hover { background:#2ea043; transform:scale(1.02);}
