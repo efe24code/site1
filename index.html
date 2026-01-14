@@ -2,164 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DevTool Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
   <style>
-    body {
-      background:#0d1117;
-      color:#c9d1d9;
-      font-family:Inter,sans-serif;
+    body { background:#0f172a }
+    .card { transition:.15s }
+    .card:hover { transform:scale(1.03) }
+    .btn-action {
+      background:#2563eb;
+      padding:.5rem 1rem;
+      border-radius:.5rem;
+      font-weight:600;
     }
-    .tool-card{
-      background:#161b22;
-      border:1px solid #30363d;
-      border-radius:14px;
-      transition:.2s;
-    }
-    .tool-card:hover{
-      border-color:#58a6ff;
-      transform:translateY(-4px);
-    }
-    textarea,input,select{
-      background:#010409!important;
-      border:1px solid #30363d!important;
-      color:#79c0ff!important;
-      border-radius:10px;
-      padding:12px;
+    textarea,input,select {
       width:100%;
-      font-family:"JetBrains Mono",monospace;
-      font-size:13px;
+      background:#020617;
+      border:1px solid #1e293b;
+      border-radius:.5rem;
+      padding:.5rem;
+      color:#e5e7eb;
     }
-    .btn-action{
-      background:#238636;
-      padding:12px;
-      border-radius:10px;
-      font-weight:700;
-      font-size:13px;
-      transition:.2s;
-      color:#fff;
-    }
-    .btn-action:hover{background:#2ea043}
   </style>
 </head>
 
-<body>
+<body class="text-slate-200">
 
-<!-- HEADER -->
-<header class="max-w-6xl mx-auto px-6 py-10">
-  <h1 class="text-4xl font-black text-white">
-    DEVTOOL<span class="text-blue-500">LITE</span>
-  </h1>
-  <p class="text-slate-500 mt-2 text-sm">
-    The Ultimate Developer’s Pocket Knife
-  </p>
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-2">⚡ DevTool Lite</h1>
+  <p class="text-slate-400 mb-6">Offline • Fast • Minimal Developer Tools</p>
 
-  <input id="search" onkeyup="filterTools()" placeholder="Search tools..."
-    class="mt-6 shadow-xl" />
-</header>
+  <!-- Search -->
+  <input id="search" placeholder="Search tool..." class="mb-6">
 
-<!-- GRID -->
-<main class="max-w-6xl mx-auto px-6">
-  <div id="homeView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+  <!-- Tool grid -->
+  <div id="grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
 
-  <!-- TOOL VIEW -->
-  <div id="toolView" class="hidden">
-    <button onclick="goHome()" class="text-sm text-slate-400 mb-6 hover:text-white">
-      ← Back
-    </button>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="p-6 rounded-2xl border border-[#30363d] bg-[#0d1117]">
-        <h2 id="toolTitle" class="text-xl font-bold text-white mb-4"></h2>
-        <div id="toolUI"></div>
-      </div>
-
-      <div class="p-6 rounded-2xl border border-[#30363d] bg-[#0d1117]">
-        <div class="flex justify-between mb-2 text-xs text-slate-400">
-          <span>Implementation</span>
-          <button onclick="copyCode()" class="hover:text-white">Copy</button>
-        </div>
-        <pre id="codeDisplay" class="text-green-400 text-xs font-mono whitespace-pre-wrap"></pre>
-      </div>
+  <!-- Tool modal -->
+  <div id="modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center">
+    <div class="bg-slate-900 p-6 rounded-xl w-full max-w-xl relative">
+      <button onclick="closeTool()" class="absolute right-4 top-3 text-xl">✖</button>
+      <h2 id="toolTitle" class="text-xl font-bold mb-4"></h2>
+      <div id="toolUI" class="space-y-3"></div>
+      <button onclick="run()" class="btn-action mt-4 w-full">RUN</button>
     </div>
   </div>
-</main>
+</div>
 
-<!-- TOOLS -->
 <script src="./tools.js"></script>
 
 <script>
-/* ================= CORE ================= */
+let currentTool = null
 
-const tools = DEVTOOLS.tools;
-const logic = DEVTOOLS.logic;
-let activeTool = null;
+const grid = document.getElementById("grid")
+const modal = document.getElementById("modal")
+const toolUI = document.getElementById("toolUI")
+const toolTitle = document.getElementById("toolTitle")
+const search = document.getElementById("search")
 
-/* INIT */
-function init(){
-  const grid = document.getElementById("homeView");
-  grid.innerHTML = "";
-
-  tools.forEach(t=>{
-    const d = document.createElement("div");
-    d.className = "tool-card p-5 text-center cursor-pointer";
-    d.dataset.name = t.name.toLowerCase();
-    d.onclick = ()=>loadTool(t.id);
-    d.innerHTML = `
-      <div class="text-3xl mb-2">${t.icon}</div>
-      <div class="text-xs font-bold uppercase tracking-wide">${t.name}</div>
-    `;
-    grid.appendChild(d);
-  });
+function render(list){
+  grid.innerHTML=""
+  list.forEach(t=>{
+    const d=document.createElement("div")
+    d.className="card bg-slate-900 p-4 rounded-xl cursor-pointer"
+    d.innerHTML=`<div class="text-2xl">${t.icon}</div>
+                 <div class="font-semibold mt-2">${t.name}</div>
+                 <div class="text-xs text-slate-400">${t.cat}</div>`
+    d.onclick=()=>openTool(t.id)
+    grid.appendChild(d)
+  })
 }
 
-/* LOAD TOOL */
-function loadTool(id){
-  activeTool = id;
-  const t = tools.find(x=>x.id===id);
-  const l = logic[id];
-
-  document.getElementById("homeView").classList.add("hidden");
-  document.getElementById("toolView").classList.remove("hidden");
-
-  toolTitle.textContent = t.name;
-  toolUI.innerHTML = l.ui;
-  codeDisplay.textContent = l.code?.js || "// no snippet";
+function openTool(id){
+  currentTool = DEVTOOLS.logic[id]
+  toolTitle.textContent = DEVTOOLS.tools.find(t=>t.id===id).name
+  toolUI.innerHTML = currentTool.ui
+  modal.classList.remove("hidden")
+  modal.classList.add("flex")
 }
 
-/* RUN */
-function run(arg){
-  logic[activeTool].run(arg);
+function closeTool(){
+  modal.classList.add("hidden")
 }
 
-/* SEARCH */
-function filterTools(){
-  const q = search.value.toLowerCase();
-  document.querySelectorAll(".tool-card").forEach(c=>{
-    c.style.display = c.dataset.name.includes(q) ? "block" : "none";
-  });
+function run(...args){
+  if(currentTool?.run) currentTool.run(...args)
 }
 
-/* BACK */
-function goHome(){
-  toolView.classList.add("hidden");
-  homeView.classList.remove("hidden");
+search.oninput=()=>{
+  const q=search.value.toLowerCase()
+  render(DEVTOOLS.tools.filter(t=>t.name.toLowerCase().includes(q)))
 }
 
-/* COPY */
-function copyCode(){
-  navigator.clipboard.writeText(codeDisplay.textContent);
-  alert("Copied");
-}
-
-init();
+render(DEVTOOLS.tools)
 </script>
 
 </body>
