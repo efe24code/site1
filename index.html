@@ -3,166 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevHub | All-in-One Tools</title>
+    <title>DevHub Flow | Automation UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: radial-gradient(circle at top right, #1e293b, #0f172a); color: #f8fafc; min-height: 100vh; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        /* SLIDER CSS */
-        .nav-slider { overflow-x: auto; display: flex; gap: 0.75rem; padding: 10px; scrollbar-width: none; -ms-overflow-style: none; }
-        .nav-slider::-webkit-scrollbar { display: none; }
-        .tool-btn { white-space: nowrap; padding: 0.7rem 1.4rem; border-radius: 99px; transition: 0.3s; border: 1px solid transparent; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
-        .tool-btn.active { background: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); border-color: #60a5fa; color: white; }
-        .tool-btn:not(.active):hover { background: rgba(255,255,255,0.05); }
-        /* TAB ANIMATION */
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* INPUTS */
-        textarea, input { background: #0f172a !important; color: #60a5fa !important; border: 1px solid #1e293b !important; border-radius: 0.75rem !important; width: 100%; font-family: 'Fira Code', monospace; }
-        .log-line { font-family: 'Fira Code', monospace; font-size: 11px; border-left: 2px solid #3b82f6; padding-left: 8px; margin-bottom: 5px; }
+        body { background: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Bağlantı Çizgisi Efekti */
+        .flow-line {
+            position: absolute; width: 2px; background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            z-index: -1; left: 50%; transform: translateX(-50%);
+        }
+
+        /* Home Grid */
+        .tool-card {
+            transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        .tool-card:hover { transform: translateY(-5px); background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
+        
+        .code-area { background: #010409 !important; border: 1px solid #30363d !important; font-family: 'Fira Code', monospace; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Node Bağlantı Noktaları */
+        .node-dot { width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; box-shadow: 0 0 10px #3b82f6; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-6">
 
-    <header class="max-w-5xl mx-auto mb-8">
-        <h1 class="text-3xl font-black italic tracking-tighter text-blue-400">DEVHUB.SITE</h1>
-        <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Static Web Tools Hub</p>
-    </header>
-
-    <nav class="max-w-5xl mx-auto mb-6 glass rounded-[2rem] p-1 shadow-xl">
-        <div class="nav-slider">
-            <button onclick="openTab(event, 'json')" class="tool-btn active">JSON Format</button>
-            <button onclick="openTab(event, 'base64')" class="tool-btn">Base64</button>
-            <button onclick="openTab(event, 'jwt')" class="tool-btn">JWT Decode</button>
-            <button onclick="openTab(event, 'qr')" class="tool-btn">QR Generate</button>
-            <button onclick="openTab(event, 'ip')" class="tool-btn">IP Tracker</button>
-            <button onclick="openTab(event, 'hash')" class="tool-btn">Hash Gen</button>
-        </div>
-    </nav>
-
-    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        <div class="lg:col-span-3">
-            <div id="json" class="tab-content active glass p-6 rounded-3xl">
-                <h2 class="text-xl font-bold mb-4 text-blue-400">JSON Formatter</h2>
-                <textarea id="jsonInput" rows="12" class="p-4 mb-4" placeholder="JSON buraya..."></textarea>
-                <button onclick="runJSON()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold transition">FORMATLA</button>
-            </div>
-
-            <div id="base64" class="tab-content glass p-6 rounded-3xl">
-                <h2 class="text-xl font-bold mb-4 text-emerald-400">Base64</h2>
-                <textarea id="b64Input" rows="8" class="p-4 mb-4" placeholder="Metin veya B64..."></textarea>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="runB64('enc')" class="bg-emerald-600 py-4 rounded-xl font-bold">ENCODE</button>
-                    <button onclick="runB64('dec')" class="bg-purple-600 py-4 rounded-xl font-bold">DECODE</button>
-                </div>
-            </div>
-
-            <div id="jwt" class="tab-content glass p-6 rounded-3xl">
-                <h2 class="text-xl font-bold mb-4 text-yellow-400">JWT Decoder</h2>
-                <input id="jwtInput" type="text" class="p-4 mb-4" placeholder="token buraya...">
-                <div id="jwtResult" class="hidden p-4 bg-black/40 rounded-xl mb-4 font-mono text-xs whitespace-pre"></div>
-                <button onclick="runJWT()" class="w-full bg-yellow-600 py-4 rounded-xl font-bold">DECODE PAYLOAD</button>
-            </div>
-
-            <div id="qr" class="tab-content glass p-6 rounded-3xl text-center">
-                <h2 class="text-xl font-bold mb-4 text-orange-400 text-left">QR Generator</h2>
-                <input id="qrInput" type="text" class="p-4 mb-4" placeholder="URL girin...">
-                <div id="qrResult" class="mb-4 inline-block bg-white p-3 rounded-lg hidden"></div>
-                <button onclick="runQR()" class="w-full bg-orange-600 py-4 rounded-xl font-bold">ÜRET</button>
-            </div>
-
-            <div id="ip" class="tab-content glass p-6 rounded-3xl">
-                <h2 class="text-xl font-bold mb-4 text-indigo-400">IP Tracker</h2>
-                <div id="ipResult" class="bg-black/40 p-6 rounded-xl mb-4 text-sm text-slate-400 min-h-[100px]">Hazır.</div>
-                <button onclick="getIP()" class="w-full bg-indigo-600 py-4 rounded-xl font-bold">SORGULA</button>
-            </div>
-
-            <div id="hash" class="tab-content glass p-6 rounded-3xl">
-                <h2 class="text-xl font-bold mb-4 text-pink-400">SHA-256 Hash</h2>
-                <input id="hashInput" type="text" class="p-4 mb-4" placeholder="Metin...">
-                <button onclick="runHash()" class="w-full bg-pink-600 py-4 rounded-xl font-bold">HASHLE</button>
-            </div>
+    <div id="home-screen" class="max-w-6xl mx-auto py-12">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-black tracking-tighter mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">DEVHUB FLOW</h1>
+            <p class="text-slate-400 uppercase tracking-[0.3em] text-xs font-bold">Lütfen bir işlem bloğu seçin</p>
         </div>
 
-        <div class="lg:col-span-1">
-            <div class="glass p-5 rounded-3xl h-[450px] flex flex-col border-dashed border-slate-700">
-                <span class="text-[9px] font-bold text-slate-500 uppercase mb-4 tracking-widest">Console</span>
-                <div id="logs" class="flex-1 overflow-y-auto pr-1">
-                    <div class="log-line text-slate-600 italic">Static System Loaded.</div>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <div onclick="showTool('json')" class="tool-card glass p-8 rounded-[2rem] text-center">
+                <div class="text-4xl mb-4">JSON</div>
+                <h3 class="font-bold">Format & Validate</h3>
+            </div>
+            <div onclick="showTool('base64')" class="tool-card glass p-8 rounded-[2rem] text-center">
+                <div class="text-4xl mb-4">B64</div>
+                <h3 class="font-bold">Encode & Decode</h3>
+            </div>
+            <div onclick="showTool('ip')" class="tool-card glass p-8 rounded-[2rem] text-center">
+                <div class="text-4xl mb-4">IP</div>
+                <h3 class="font-bold">Geo Tracker</h3>
             </div>
         </div>
-    </main>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <div id="tool-interface" class="max-w-5xl mx-auto hidden">
+        <button onclick="goHome()" class="mb-8 text-slate-500 hover:text-white flex items-center gap-2 transition">
+            ← Ana Sayfaya Dön
+        </button>
+
+        <div class="relative flex flex-col items-center gap-12 mb-12">
+            
+            <div class="glass p-6 rounded-2xl w-full max-w-lg relative">
+                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 node-dot"></div>
+                <label class="text-[10px] font-bold text-blue-400 uppercase mb-2 block tracking-widest">Input Block</label>
+                <div id="active-tool-ui">
+                    </div>
+            </div>
+
+            <div class="flow-line h-12"></div>
+
+            <div class="glass p-6 rounded-2xl w-full max-w-lg relative border-emerald-500/30">
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 node-dot bg-emerald-500 shadow-emerald-500"></div>
+                <label class="text-[10px] font-bold text-emerald-400 uppercase mb-2 block tracking-widest">Developer API Snippet (Node.js/Fetch)</label>
+                <pre class="code-area p-4 rounded-xl text-[11px] text-emerald-500 overflow-x-auto" id="code-snippet">
+// Örnek kod burada görünecek...
+                </pre>
+                <button onclick="copySnippet()" class="mt-3 text-[10px] text-slate-400 hover:text-white underline">Kodu Kopyala</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function addLog(msg, color='text-blue-400'){
-            const div = document.createElement('div');
-            div.className = `log-line ${color}`;
-            div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
-            document.getElementById('logs').prepend(div);
+        const tools = {
+            json: {
+                title: "JSON Formatter",
+                ui: `<textarea id="toolInput" rows="6" class="p-3 text-sm" placeholder='{"key":"value"}'></textarea>
+                     <button onclick="processJSON()" class="w-full bg-blue-600 py-3 rounded-xl font-bold mt-2">Formatla</button>`,
+                code: `// JSON Parser Example\nconst data = JSON.parse(input);\nconsole.log(JSON.stringify(data, null, 2));`
+            },
+            base64: {
+                title: "Base64 Converter",
+                ui: `<textarea id="toolInput" rows="4" class="p-3 text-sm" placeholder="Metin girin..."></textarea>
+                     <div class="flex gap-2 mt-2">
+                        <button onclick="processB64('enc')" class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">Encode</button>
+                        <button onclick="processB64('dec')" class="flex-1 bg-purple-600 py-3 rounded-xl font-bold">Decode</button>
+                     </div>`,
+                code: `// Base64 Node.js\nconst b64 = Buffer.from("text").toString("base64");\nconst text = Buffer.from(b64, "base64").toString("utf-8");`
+            },
+            ip: {
+                title: "IP Tracker",
+                ui: `<div id="ipRes" class="p-4 bg-slate-900 rounded-lg mb-2 text-xs text-slate-400 italic">Sorgu bekleniyor...</div>
+                     <button onclick="processIP()" class="w-full bg-indigo-600 py-3 rounded-xl font-bold">IP Bul</button>`,
+                code: `// Fetch IP Info\nfetch('https://ipapi.co/json/')\n  .then(res => res.json())\n  .then(data => console.log(data));`
+            }
+        };
+
+        function showTool(key) {
+            document.getElementById('home-screen').classList.add('hidden');
+            const uiContainer = document.getElementById('tool-interface');
+            uiContainer.classList.remove('hidden');
+            
+            document.getElementById('active-tool-ui').innerHTML = tools[key].ui;
+            document.getElementById('code-snippet').innerText = tools[key].code;
         }
 
-        function openTab(e, name){
-            document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-            document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
-            document.getElementById(name).classList.add('active');
-            e.currentTarget.classList.add('active');
-            addLog(name.toUpperCase() + " açıldı.");
+        function goHome() {
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('tool-interface').classList.add('hidden');
         }
 
-        function runJSON(){
-            const el = document.getElementById('jsonInput');
-            try { el.value = JSON.stringify(JSON.parse(el.value), null, 4); addLog("JSON Formatlandı.", "text-emerald-400"); }
-            catch(e){ addLog("Hata: Geçersiz JSON", "text-red-400"); }
+        function processJSON() {
+            const el = document.getElementById('toolInput');
+            try { el.value = JSON.stringify(JSON.parse(el.value), null, 4); } 
+            catch(e) { alert("Hatalı JSON!"); }
         }
 
-        function runB64(t){
-            const el = document.getElementById('b64Input');
-            try { el.value = (t==='enc') ? btoa(el.value) : atob(el.value); addLog("Base64 başarılı."); }
-            catch(e){ addLog("B64 Hatası!", "text-red-400"); }
+        function processB64(mode) {
+            const el = document.getElementById('toolInput');
+            try { el.value = (mode === 'enc') ? btoa(el.value) : atob(el.value); }
+            catch(e) { alert("B64 hatası!"); }
         }
 
-        function runJWT(){
-            const input = document.getElementById('jwtInput').value;
-            const res = document.getElementById('jwtResult');
-            try {
-                const payload = JSON.parse(atob(input.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-                res.innerText = JSON.stringify(payload, null, 4);
-                res.classList.remove('hidden');
-                addLog("JWT Çözüldü.", "text-yellow-400");
-            } catch(e){ addLog("Hata: Geçersiz JWT!", "text-red-400"); }
+        async function processIP() {
+            const resBox = document.getElementById('ipRes');
+            resBox.innerText = "Yükleniyor...";
+            const r = await fetch('https://ipapi.co/json/');
+            const d = await r.json();
+            resBox.innerText = `IP: ${d.ip}\nKonum: ${d.city}, ${d.country_name}`;
         }
 
-        function runQR(){
-            const txt = document.getElementById('qrInput').value;
-            const res = document.getElementById('qrResult');
-            if(!txt) return;
-            res.innerHTML = "";
-            new QRCode(res, { text: txt, width: 140, height: 140 });
-            res.classList.remove('hidden');
-            addLog("QR Üretildi.");
-        }
-
-        async function getIP(){
-            addLog("Sorgulanıyor...");
-            try {
-                const r = await fetch('https://ipapi.co/json/');
-                const d = await r.json();
-                document.getElementById('ipResult').innerHTML = `IP: ${d.ip}<br>Konum: ${d.city}, ${d.country_name}<br>ISP: ${d.org}`;
-                addLog("IP Alındı.", "text-indigo-400");
-            } catch(e){ addLog("IP Hatası!", "text-red-400"); }
-        }
-
-        async function runHash(){
-            const txt = document.getElementById('hashInput').value;
-            if(!txt) return;
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
-            document.getElementById('hashInput').value = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-            addLog("Hash üretildi.");
+        function copySnippet() {
+            const code = document.getElementById('code-snippet').innerText;
+            navigator.clipboard.writeText(code);
+            alert("Kod panoya kopyalandı!");
         }
     </script>
 </body>
