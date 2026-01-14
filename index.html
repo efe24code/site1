@@ -3,61 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DevTool-Lite | Mega Hub</title>
+    <title>DevTool-Lite | Pro Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass-card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; transition: all 0.2s ease; }
-        .glass-card:hover { border-color: #58a6ff; background: #1c2128; transform: translateY(-3px); }
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; }
+        .glass-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; transition: 0.2s; }
+        .glass-card:hover { border-color: #58a6ff; background: #1c2128; }
         
+        /* Navigation */
+        #nav { background: #010409; border-right: 1px solid #30363d; z-index: 1000; }
         @media (min-width: 768px) {
-            #navigation { width: 80px; position: fixed; left: 0; top: 0; height: 100vh; flex-direction: column; }
-            .main-content { margin-left: 80px; padding: 40px; }
+            #nav { width: 70px; position: fixed; left: 0; top: 0; height: 100vh; flex-direction: column; }
+            .content { margin-left: 70px; padding: 40px; }
         }
         @media (max-width: 767px) {
-            #navigation { width: 100%; position: fixed; bottom: 0; left: 0; height: 65px; flex-direction: row; justify-content: space-around; z-index: 1000; border-top: 1px solid #30363d; }
-            .main-content { margin-left: 0; padding: 20px 20px 90px 20px; }
+            #nav { width: 100%; position: fixed; bottom: 0; height: 60px; flex-direction: row; justify-content: space-around; border-top: 1px solid #30363d; }
+            .content { padding: 20px 20px 80px 20px; }
         }
 
-        .tool-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-        input, textarea, select { background: #0d1117 !important; border: 1px solid #30363d !important; color: #58a6ff !important; border-radius: 10px; padding: 10px; width: 100%; outline: none; font-size: 14px; }
-        .tab-btn { padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; color: #8b949e; border-radius: 6px; }
-        .tab-btn.active { color: #58a6ff; background: rgba(88, 166, 255, 0.1); }
+        .tool-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        input, textarea { background: #0d1117 !important; border: 1px solid #30363d !important; color: #58a6ff !important; border-radius: 8px; padding: 10px; width: 100%; outline: none; font-size: 14px; }
+        .btn-primary { background: #238636; color: white; font-weight: bold; padding: 10px; border-radius: 8px; width: 100%; transition: 0.2s; }
+        .btn-primary:hover { background: #2ea043; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <nav id="navigation" class="flex items-center py-4 px-2 bg-[#010409]">
-        <div onclick="goHome()" class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black cursor-pointer">DL</div>
+    <nav id="nav" class="flex items-center py-4">
+        <div onclick="goHome()" class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black cursor-pointer">DL</div>
     </nav>
 
-    <main class="main-content">
-        <div id="home" class="max-w-6xl mx-auto">
+    <main class="content">
+        <div id="home">
             <header class="mb-8">
                 <h1 class="text-3xl font-black text-white">DEVTOOL<span class="text-blue-500">-LITE</span></h1>
-                <input type="text" id="search" onkeyup="filter()" placeholder="Quick search 20+ tools..." class="mt-4 max-w-md">
+                <p class="text-slate-500 text-sm">Professional Web Utility Hub</p>
+                <input type="text" id="search" onkeyup="filter()" placeholder="Search 20+ tools..." class="mt-4 max-w-md">
             </header>
 
             <div class="tool-grid" id="toolGrid">
                 </div>
         </div>
 
-        <div id="interface" class="hidden max-w-6xl mx-auto">
-            <button onclick="goHome()" class="mb-6 text-slate-500 font-bold">← BACK</button>
-            <div class="flex flex-col lg:flex-row gap-6">
-                <div class="glass-card p-6 flex-1 h-fit">
-                    <h2 id="toolTitle" class="text-xl font-black text-white mb-6 uppercase italic">Tool</h2>
+        <div id="interface" class="hidden max-w-5xl mx-auto">
+            <button onclick="goHome()" class="mb-6 text-slate-400 font-bold hover:text-white">← BACK</button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-card p-6">
+                    <h2 id="toolTitle" class="text-xl font-black text-white mb-4 uppercase italic">Tool</h2>
                     <div id="toolUI"></div>
                 </div>
-                <div class="flex-1 flex flex-col gap-4">
-                    <div class="flex justify-between items-center bg-[#161b22] p-2 rounded-xl border border-[#30363d]">
-                        <div class="flex gap-1" id="langTabs"></div>
-                        <div class="flex gap-1" id="lvlTabs"></div>
+                <div class="flex flex-col gap-4">
+                    <div class="bg-[#161b22] p-2 rounded-lg border border-[#30363d] flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-slate-500 px-2">SOURCE EXAMPLES</span>
+                        <div class="flex gap-2">
+                            <select id="langSel" onchange="updateCode()" class="!py-1 !text-[10px] !w-24">
+                                <option value="js">JavaScript</option>
+                                <option value="py">Python</option>
+                                <option value="php">PHP</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="bg-[#010409] border border-[#30363d] rounded-xl overflow-hidden">
-                        <pre id="codeDisplay" class="p-5 text-[11px] font-mono text-green-400 overflow-x-auto"></pre>
+                    <div class="bg-[#010409] border border-[#30363d] rounded-lg overflow-hidden relative">
+                        <button onclick="copyCode()" class="absolute top-2 right-2 text-[10px] bg-white/10 px-2 py-1 rounded hover:bg-white/20">Copy</button>
+                        <pre id="codeDisplay" class="p-4 text-[11px] font-mono text-green-400 overflow-x-auto"></pre>
                     </div>
                 </div>
             </div>
@@ -65,54 +75,46 @@
     </main>
 
     <script>
-        let curTool = ""; let curLang = "js"; let curLvl = "simple";
-
-        // MEGA TOOL DATABASE
         const tools = [
-            { id: 'ip', cat: 'Network', name: 'IP Tracker', icon: '📡' },
-            { id: 'whois', cat: 'Network', name: 'Whois Lookup', icon: '🌐' },
-            { id: 'json', cat: 'Data', name: 'JSON Beautify', icon: '{ }' },
-            { id: 'hash', cat: 'Crypto', name: 'SHA-256 Hash', icon: '🔒' },
-            { id: 'base64', cat: 'Crypto', name: 'Base64', icon: '📦' },
-            { id: 'unix', cat: 'Data', name: 'Unix Time', icon: '⏰' },
-            { id: 'pass', cat: 'Security', name: 'Password Gen', icon: '🔑' },
-            { id: 'url', cat: 'Network', name: 'URL Encode', icon: '🔗' },
-            { id: 'color', cat: 'Design', name: 'Color Picker', icon: '🎨' },
-            { id: 'lorem', cat: 'Text', name: 'Lorem Ipsum', icon: '📝' },
-            { id: 'count', cat: 'Text', name: 'Word Counter', icon: '🔢' },
-            { id: 'case', cat: 'Text', name: 'Case Convert', icon: 'Aa' },
-            { id: 'md5', cat: 'Crypto', name: 'MD5 Hash', icon: '🧬' },
-            { id: 'qr', cat: 'Misc', name: 'QR Generator', icon: '🔳' },
-            { id: 'pxrem', cat: 'Design', name: 'PX to REM', icon: '📏' },
-            { id: 'minify', cat: 'Dev', name: 'CSS Minify', icon: '📉' },
-            { id: 'list', cat: 'Text', name: 'List Sort', icon: '📑' },
-            { id: 'binary', cat: 'Data', name: 'Binary Conv', icon: '01' },
-            { id: 'hex', cat: 'Data', name: 'Hex to RGB', icon: 'HEX' },
-            { id: 'userAgent', cat: 'Dev', name: 'UA Parser', icon: '📱' }
+            { id: 'ip', name: 'IP Tracker', icon: '📡' },
+            { id: 'whois', name: 'Whois Lookup', icon: '🌐' },
+            { id: 'json', name: 'JSON Format', icon: '{ }' },
+            { id: 'hash', name: 'SHA-256', icon: '🔒' },
+            { id: 'pass', name: 'Pass Gen', icon: '🔑' },
+            { id: 'base64', name: 'Base64', icon: '📦' },
+            { id: 'unix', name: 'Unix Time', icon: '⏰' },
+            { id: 'color', name: 'Color Picker', icon: '🎨' },
+            { id: 'count', name: 'Word Count', icon: '🔢' },
+            { id: 'url', name: 'URL Encoder', icon: '🔗' },
+            { id: 'case', name: 'Case Switch', icon: 'Aa' },
+            { id: 'md5', name: 'MD5 Hash', icon: '🧬' },
+            { id: 'lorem', name: 'Lorem Ipsum', icon: '📝' },
+            { id: 'pxrem', name: 'PX to REM', icon: '📏' },
+            { id: 'qr', name: 'QR Code', icon: '🔳' },
+            { id: 'bin', name: 'Binary Conv', icon: '01' },
+            { id: 'ua', name: 'User Agent', icon: '📱' },
+            { id: 'minify', name: 'CSS Minify', icon: '📉' },
+            { id: 'hex', name: 'Hex to RGB', icon: 'HEX' },
+            { id: 'sort', name: 'List Sorter', icon: '📑' }
         ];
 
         const logic = {
             ip: {
-                ui: `<input id="ipInp" placeholder="Enter IP"><button onclick="runIP()" class="bg-blue-600 w-full mt-4 py-3 rounded-xl font-bold">TRACK</button><div id="ipRes" class="mt-4"></div>`,
-                js: { simple: `fetch("https://ipapi.co/json/");`, hard: `class IPTracker { ... }` }
+                ui: `<input id="ipInp" placeholder="Enter IP (Blank for yours)"><button onclick="runIP()" class="btn-primary mt-3">TRACK IP</button><div id="ipRes" class="mt-4 text-xs font-mono"></div>`,
+                js: `fetch('https://ipapi.co/json/').then(r => r.json()).then(console.log);`
             },
-            pass: {
-                ui: `<input id="pOut" readonly><button onclick="runPass()" class="bg-green-600 w-full mt-4 py-3 rounded-xl font-bold">GENERATE</button>`,
-                js: { simple: `Math.random().toString(36).slice(-10);`, hard: `crypto.getRandomValues(new Uint32Array(10));` }
+            whois: {
+                ui: `<input id="wsInp" placeholder="google.com"><button onclick="runWS()" class="btn-primary mt-3">WHOIS LOOKUP</button><pre id="wsRes" class="mt-4 text-[10px] text-blue-400 overflow-auto max-h-40"></pre>`,
+                js: `fetch('https://rdap.org/domain/google.com');`
             },
             json: {
-                ui: `<textarea id="jt" rows="8"></textarea><button onclick="runJSON()" class="bg-orange-600 w-full mt-2 py-3 rounded-xl font-bold">FORMAT</button>`,
-                js: { simple: `JSON.stringify(data, null, 2);`, hard: `JSON.parse(raw); // with error handling` }
+                ui: `<textarea id="jt" rows="6" placeholder='{"key":"value"}'></textarea><button onclick="runJSON()" class="btn-primary mt-2">BEAUTIFY</button>`,
+                js: `JSON.stringify(JSON.parse(input), null, 4);`
             },
-            color: {
-                ui: `<input type="color" id="clrInp" onchange="runColor()"><div id="clrOut" class="mt-4 p-8 text-center font-bold glass-card">#000000</div>`,
-                js: { simple: `colorInput.value;`, hard: `// Convert to RGB/HSL` }
-            },
-            count: {
-                ui: `<textarea id="ctInp" onkeyup="runCount()" placeholder="Type something..."></textarea><div id="ctOut" class="mt-2 text-blue-400 font-bold">Words: 0 | Chars: 0</div>`,
-                js: { simple: `text.split(' ').length;`, hard: `text.match(/\\w+/g).length;` }
+            pass: {
+                ui: `<input id="pOut" readonly><button onclick="runPass()" class="btn-primary mt-3">GENERATE PASSWORD</button>`,
+                js: `Math.random().toString(36).slice(-12);`
             }
-            // Diğer tool logicleri benzer şekilde eklenebilir...
         };
 
         function init() {
@@ -121,11 +123,9 @@
                 grid.innerHTML += `
                     <div onclick="openTool('${t.id}')" class="glass-card p-4 text-center cursor-pointer" data-name="${t.name.toLowerCase()}">
                         <div class="text-2xl mb-2">${t.icon}</div>
-                        <div class="text-[10px] font-bold text-white uppercase truncate">${t.name}</div>
-                        <div class="text-[8px] text-slate-500 mt-1">${t.cat}</div>
+                        <div class="text-[11px] font-bold text-white uppercase">${t.name}</div>
                     </div>`;
             });
-            setupTabs();
         }
 
         function openTool(id) {
@@ -133,25 +133,8 @@
             document.getElementById('home').classList.add('hidden');
             document.getElementById('interface').classList.remove('hidden');
             document.getElementById('toolTitle').innerText = tools.find(t=>t.id===id).name;
-            document.getElementById('toolUI').innerHTML = logic[id]?.ui || `<p class="text-slate-500">Workspace for ${id} is ready. Logic coming soon.</p>`;
+            document.getElementById('toolUI').innerHTML = logic[id]?.ui || `<p class="text-slate-500">Tool logic coming soon.</p>`;
             updateCode();
-            window.scrollTo(0,0);
-        }
-
-        function setupTabs() {
-            const lTabs = document.getElementById('langTabs');
-            ['js', 'py', 'php'].forEach(l => {
-                lTabs.innerHTML += `<button onclick="setLang('${l}')" id="l-${l}" class="tab-btn ${l==='js'?'active':''}">\${l.toUpperCase()}</button>`;
-            });
-            const vTabs = document.getElementById('lvlTabs');
-            ['simple', 'hard'].forEach(v => {
-                vTabs.innerHTML += `<button onclick="setLvl('${v}')" id="v-${v}" class="tab-btn ${v==='simple'?'active':''}">\${v.toUpperCase()}</button>`;
-            });
-        }
-
-        function updateCode() {
-            const code = logic[curTool]?.[curLang]?.[curLvl] || logic[curTool]?.js?.simple || "// Code snippet not available yet.";
-            document.getElementById('codeDisplay').innerText = code;
         }
 
         function goHome() {
@@ -159,28 +142,50 @@
             document.getElementById('interface').classList.add('hidden');
         }
 
-        function setLang(l) { curLang = l; document.querySelectorAll('#langTabs .tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('l-'+l).classList.add('active'); updateCode(); }
-        function setLvl(v) { curLvl = v; document.querySelectorAll('#lvlTabs .tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('v-'+v).classList.add('active'); updateCode(); }
-
-        // TOOL FUNCTIONS
         async function runIP() {
             const ip = document.getElementById('ipInp').value;
             const res = document.getElementById('ipRes');
-            res.innerHTML = "Fetching...";
-            const r = await fetch(`https://ipapi.co/${ip}/json/`);
-            const d = await r.json();
-            res.innerHTML = `<div class="text-[11px] font-mono text-blue-400">IP: \${d.ip}<br>Org: \${d.org}<br>Country: \${d.country_name}</div>`;
+            res.innerText = "Loading...";
+            try {
+                const r = await fetch(`https://ipapi.co/${ip}/json/`);
+                const d = await r.json();
+                res.innerHTML = `IP: ${d.ip}<br>City: ${d.city}<br>Org: ${d.org}`;
+            } catch { res.innerText = "Error fetching IP."; }
         }
-        function runPass() { document.getElementById('pOut').value = Math.random().toString(36).slice(-12).toUpperCase(); }
-        function runJSON() { const t = document.getElementById('jt'); t.value = JSON.stringify(JSON.parse(t.value), null, 4); }
-        function runColor() { const c = document.getElementById('clrInp').value; const o = document.getElementById('clrOut'); o.style.background = c; o.innerText = c; }
-        function runCount() { const t = document.getElementById('ctInp').value; document.getElementById('ctOut').innerText = \`Words: \${t.trim()?t.trim().split(/\\s+/).length:0} | Chars: \${t.length}\`; }
+
+        async function runWS() {
+            const dom = document.getElementById('wsInp').value;
+            const res = document.getElementById('wsRes');
+            res.innerText = "Querying...";
+            try {
+                const r = await fetch(`https://rdap.org/domain/${dom}`);
+                const d = await r.json();
+                res.innerText = JSON.stringify(d, null, 2);
+            } catch { res.innerText = "Domain not found."; }
+        }
+
+        function runJSON() {
+            const t = document.getElementById('jt');
+            try { t.value = JSON.stringify(JSON.parse(t.value), null, 4); } catch { alert("Invalid JSON"); }
+        }
+
+        function runPass() {
+            document.getElementById('pOut').value = Math.random().toString(36).slice(-12).toUpperCase();
+        }
+
+        function updateCode() {
+            const lang = document.getElementById('langSel').value;
+            document.getElementById('codeDisplay').innerText = logic[curTool]?.[lang] || logic[curTool]?.js || "// No snippet available.";
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(document.getElementById('codeDisplay').innerText);
+        }
 
         function filter() {
             const q = document.getElementById('search').value.toLowerCase();
-            document.querySelectorAll('.glass-card').forEach(c => {
-                const name = c.getAttribute('data-name');
-                if(name) c.style.display = name.includes(q) ? "block" : "none";
+            document.querySelectorAll('#toolGrid > div').forEach(c => {
+                c.style.display = c.getAttribute('data-name').includes(q) ? "block" : "none";
             });
         }
 
