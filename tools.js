@@ -1,153 +1,132 @@
-/* ================================
-   DEVTOOL LITE – ALL TOOLS
-   ================================ */
-
 window.DEVTOOLS = {
 
-  /* ---------- TOOL LIST ---------- */
-  tools: [
-    { id: "hash", name: "Hash Lab", cat: "crypto", icon: "🔐" },
-    { id: "ip", name: "IP Intelligence", cat: "network", icon: "📡" },
-    { id: "json", name: "JSON Repair", cat: "data", icon: "{ }" },
-    { id: "jwt", name: "JWT Decoder", cat: "crypto", icon: "🪪" },
-    { id: "uuid", name: "UUID Studio", cat: "crypto", icon: "🆔" },
-    { id: "base", name: "Encoding Lab", cat: "data", icon: "📦" },
-    { id: "css", name: "CSS Minifier", cat: "dev", icon: "🎨" },
-    { id: "count", name: "Word Counter", cat: "text", icon: "🔢" }
-  ],
+tools:[
+ {id:"hash",name:"Hash Lab",cat:"crypto",icon:"🔐"},
+ {id:"uuid",name:"UUID Generator",cat:"crypto",icon:"🆔"},
+ {id:"jwt",name:"JWT Decoder",cat:"crypto",icon:"🪪"},
+ {id:"pass",name:"Password Check",cat:"crypto",icon:"🔑"},
 
-  /* ---------- TOOL LOGIC ---------- */
-  logic: {
+ {id:"json",name:"JSON Formatter",cat:"data",icon:"{ }"},
+ {id:"base",name:"Base64 Encode/Decode",cat:"data",icon:"📦"},
+ {id:"csv",name:"CSV → JSON",cat:"data",icon:"📑"},
 
-    hash: {
-      ui: `
-        <textarea id="inp" rows="4" placeholder="Text..."></textarea>
-        <select id="algo" class="mt-3">
-          <option>SHA-256</option>
-          <option>SHA-1</option>
-          <option>SHA-512</option>
-        </select>
-        <button class="btn-action mt-3" onclick="run()">GENERATE</button>
-        <input id="out" class="mt-3 font-mono text-green-400" readonly>
-      `,
-      run: async () => {
-        const txt = inp.value;
-        const algo = algoSelect().value;
-        const buf = new TextEncoder().encode(txt);
-        const hash = await crypto.subtle.digest(algo, buf);
-        out.value = [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,"0")).join("");
-      },
-      code: {
-        js: "crypto.subtle.digest('SHA-256', data)",
-        py: "hashlib.sha256(b'text').hexdigest()",
-        php: "hash('sha256','text');"
-      }
-    },
+ {id:"count",name:"Word Counter",cat:"text",icon:"🔢"},
+ {id:"slug",name:"Slug Generator",cat:"text",icon:"🔗"},
+ {id:"case",name:"Case Switcher",cat:"text",icon:"Aa"},
 
-    ip: {
-      ui: `
-        <input id="inp" placeholder="IP (empty = yours)">
-        <button class="btn-action mt-3" onclick="run()">SCAN</button>
-        <pre id="out" class="mt-3 text-xs text-blue-300"></pre>
-      `,
-      run: async () => {
-        out.textContent = "Loading...";
-        const r = await fetch("/api/ip");
-        out.textContent = JSON.stringify(await r.json(), null, 2);
-      },
-      code: { js: "fetch('/api/ip')" }
-    },
+ {id:"css",name:"CSS Minifier",cat:"dev",icon:"🎨"},
+ {id:"regex",name:"Regex Tester",cat:"dev",icon:"🧪"},
+ {id:"env",name:".env Validator",cat:"dev",icon:"⚙️"},
 
-    json: {
-      ui: `
-        <textarea id="inp" rows="6" placeholder="Broken JSON"></textarea>
-        <button class="btn-action mt-3" onclick="run()">REPAIR</button>
-      `,
-      run: () => {
-        try {
-          inp.value = JSON.stringify(JSON.parse(inp.value), null, 2);
-        } catch {
-          alert("Invalid JSON");
-        }
-      },
-      code: { js: "JSON.parse + JSON.stringify" }
-    },
+ {id:"ua",name:"User-Agent Parser",cat:"network",icon:"📱"}
+],
 
-    jwt: {
-      ui: `
-        <textarea id="inp" rows="3" placeholder="JWT token"></textarea>
-        <button class="btn-action mt-3" onclick="run()">DECODE</button>
-        <pre id="out" class="mt-3 text-xs"></pre>
-      `,
-      run: () => {
-        try {
-          const p = inp.value.split(".")[1];
-          out.textContent = JSON.stringify(JSON.parse(atob(p)), null, 2);
-        } catch {
-          out.textContent = "Invalid JWT";
-        }
-      },
-      code: { js: "atob(token.split('.')[1])" }
-    },
+logic:{
 
-    uuid: {
-      ui: `
-        <button class="btn-action" onclick="run()">GENERATE UUID</button>
-        <input id="out" class="mt-3 font-mono text-center" readonly>
-      `,
-      run: () => out.value = crypto.randomUUID(),
-      code: { js: "crypto.randomUUID()" }
-    },
+hash:{
+ ui:`<textarea id="inp" rows="3"></textarea>
+     <select id="algo"><option>SHA-256</option><option>SHA-1</option></select>
+     <input id="out" readonly>`,
+ run:async()=>{
+  const b=new TextEncoder().encode(inp.value)
+  const h=await crypto.subtle.digest(algo.value,b)
+  out.value=[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")
+ }
+},
 
-    base: {
-      ui: `
-        <textarea id="inp" rows="3"></textarea>
-        <div class="grid grid-cols-2 gap-2 mt-2">
-          <button class="btn-action" onclick="run('e')">ENCODE</button>
-          <button class="btn-action bg-slate-700" onclick="run('d')">DECODE</button>
-        </div>
-        <textarea id="out" rows="3" class="mt-3" readonly></textarea>
-      `,
-      run: (m) => {
-        try {
-          out.value = m === "e" ? btoa(inp.value) : atob(inp.value);
-        } catch {
-          out.value = "Error";
-        }
-      },
-      code: { js: "btoa / atob" }
-    },
+uuid:{
+ ui:`<input id="out" readonly>`,
+ run:()=>out.value=crypto.randomUUID()
+},
 
-    css: {
-      ui: `
-        <textarea id="inp" rows="6" placeholder="CSS..."></textarea>
-        <button class="btn-action mt-3" onclick="run()">MINIFY</button>
-        <textarea id="out" rows="6" class="mt-3"></textarea>
-      `,
-      run: () => {
-        out.value = inp.value
-          .replace(/\/\*[\s\S]*?\*\//g,"")
-          .replace(/\s+/g," ")
-          .replace(/ ?([:;{}]) ?/g,"$1")
-          .trim();
-      },
-      code: { js: "regex minify" }
-    },
+jwt:{
+ ui:`<textarea id="inp" rows="3"></textarea><pre id="out"></pre>`,
+ run:()=>{
+  try{out.textContent=JSON.stringify(JSON.parse(atob(inp.value.split(".")[1])),null,2)}
+  catch{out.textContent="Invalid JWT"}
+ }
+},
 
-    count: {
-      ui: `
-        <textarea id="inp" rows="6" onkeyup="run()"></textarea>
-        <div id="out" class="mt-3 text-xs"></div>
-      `,
-      run: () => {
-        const t = inp.value;
-        out.innerHTML = `Words: ${t.trim()?t.trim().split(/\s+/).length:0} | Chars: ${t.length}`;
-      },
-      code: { js: "split + length" }
-    }
+pass:{
+ ui:`<input id="inp"><div id="out"></div>`,
+ run:()=>{
+  let s=0,p=inp.value
+  if(p.length>7)s++
+  if(/[A-Z]/.test(p))s++
+  if(/[0-9]/.test(p))s++
+  if(/[^A-Za-z0-9]/.test(p))s++
+  out.textContent=["Very Weak","Weak","OK","Strong","Very Strong"][s]
+ }
+},
 
-  }
-};
+json:{
+ ui:`<textarea id="inp" rows="6"></textarea>`,
+ run:()=>{
+  try{inp.value=JSON.stringify(JSON.parse(inp.value),null,2)}
+  catch{alert("Invalid JSON")}
+ }
+},
 
-/* helpers */
-function algoSelect(){return document.getElementById("algo")}
+base:{
+ ui:`<textarea id="inp"></textarea><textarea id="out"></textarea>`,
+ run:()=>{
+  try{out.value=btoa(inp.value)}
+  catch{out.value="Error"}
+ }
+},
+
+csv:{
+ ui:`<textarea id="inp" rows="6"></textarea><pre id="out"></pre>`,
+ run:()=>{
+  const [h,...r]=inp.value.split("\n")
+  const k=h.split(",")
+  out.textContent=JSON.stringify(r.map(l=>Object.fromEntries(l.split(",").map((v,i)=>[k[i],v]))),null,2)
+ }
+},
+
+count:{
+ ui:`<textarea id="inp" rows="6"></textarea><div id="out"></div>`,
+ run:()=>{
+  const t=inp.value
+  out.textContent=`Words: ${t.trim()?t.trim().split(/\s+/).length:0} | Chars: ${t.length}`
+ }
+},
+
+slug:{
+ ui:`<input id="inp"><input id="out" readonly>`,
+ run:()=>out.value=inp.value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")
+},
+
+case:{
+ ui:`<textarea id="inp" rows="4"></textarea>`,
+ run:()=>inp.value=[...inp.value].map(c=>c===c.toUpperCase()?c.toLowerCase():c.toUpperCase()).join("")
+},
+
+css:{
+ ui:`<textarea id="inp" rows="6"></textarea><textarea id="out"></textarea>`,
+ run:()=>out.value=inp.value.replace(/\s+/g," ").replace(/ ?([:;{}]) ?/g,"$1")
+},
+
+regex:{
+ ui:`<input id="pattern"><textarea id="inp"></textarea><pre id="out"></pre>`,
+ run:()=>{
+  try{out.textContent=inp.value.match(new RegExp(pattern.value,"g"))?.join("\n")||"No match"}
+  catch{out.textContent="Invalid regex"}
+ }
+},
+
+env:{
+ ui:`<textarea id="inp" rows="6"></textarea><pre id="out"></pre>`,
+ run:()=>{
+  const bad=inp.value.split("\n").filter(l=>!/^\\w+=/.test(l))
+  out.textContent=bad.length?bad.join("\n"):"Valid .env"
+ }
+},
+
+ua:{
+ ui:`<textarea id="inp"></textarea><pre id="out"></pre>`,
+ run:()=>out.textContent=/mobile/i.test(inp.value)?"Mobile":/chrome/i.test(inp.value)?"Chrome":"Unknown"
+}
+
+}
+}
